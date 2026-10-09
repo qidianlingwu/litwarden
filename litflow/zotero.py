@@ -652,14 +652,39 @@ class ZoteroClient:
         return self._version
 
     def _count_existing(self, keys: list[str]) -> int:
-        """数这批 key 里还有几个真的在库里。用来核对删除结果。"""
+        """数这批 key 里还有几个真的在库里。用来核对删除结果。
+
+        两个细节，少一个就会数错，而且都是**往「多算」的方向错**：
+
+          · `GET /items?itemKey=a,b` 返回的**不只是**这两个条目，连它们的
+            子条目（附件、笔记）一并返回。实测查 5 个 key 得到 20 条
+            （5 父 + 5 附件 + 10 笔记）。不过滤就会把子条目算进「还剩几条」，
+            于是 delete_items 的记账 `len(chunk) - 本函数` 在**部分失败时少报**，
+            极端情况报出负数 —— 又变回那个「假成功」。
+          · 返回条数会被 `limit` 截断。50 个 key 带上子条目轻易超过 100，
+            所以必须翻页取完，否则会把「没取到的」当成「已删掉」。
+        """
         if not keys:
             return 0
-        _, data, _ = self._request(
-            "GET", f"{self.prefix}/items",
-            params={"itemKey": ",".join(keys), "limit": 100},
-        )
-        return len(data) if isinstance(data, list) else 0
+        want = set(keys)
+        found = 0
+        start = 0
+        while True:
+            _, data, _ = self._request(
+                "GET", f"{self.prefix}/items",
+                params={"itemKey": ",".join(keys), "limit": 100, "start": start},
+            )
+            if not isinstance(data, list) or not data:
+                break
+            for it in data:
+                # 只认请求里那批 key 本身；子条目的 key 与它们不相干
+                k = it.get("key") or (it.get("data") or {}).get("key")
+                if k in want:
+                    found += 1
+            if len(data) < 100:
+                break
+            start += len(data)
+        return found
 
     def delete_items(self, keys: list[str]) -> int:
         """批量删除条目。用于清理上传失败留下的空壳附件。
@@ -674,6 +699,9 @@ class ZoteroClient:
           3. 本地 API 的 DELETE 返回 **204 且没有响应体**，拿不到逐条结果。
              所以不能按请求数记账（那样会把「漏删 27 条」报成「成功 28 条」），
              只能删完再读回来核对。
+          4. 核对时不能直接拿 `GET /items` 的返回条数当结果 —— 它会连
+             **子条目**（附件、笔记）一起返回，而且会被 `limit` 截断。
+             详见 `_count_existing`。
 
         早先这三点全缺，`zotero cleanup-empty` 从来没有真正跑对过。
         """
