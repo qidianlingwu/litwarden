@@ -2,14 +2,10 @@
 
 本地优先的科研文献工作流：查找 → 筛选 → 初读提炼 → 管理
 
-[![CI](https://github.com/OWNER/litflow/actions/workflows/ci.yml/badge.svg)](https://github.com/OWNER/litflow/actions/workflows/ci.yml)
+[![CI](https://github.com/qidianlingwu/litflow/actions/workflows/ci.yml/badge.svg)](https://github.com/qidianlingwu/litflow/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](requirements.txt)
 [![License](https://img.shields.io/badge/license-MIT-green)](#许可证)
-
-<!-- TODO(维护者): 建仓后把上面徽章链接与下方 clone 命令里的 OWNER 换成实际 GitHub 用户名 -->
-
-
 
 <details>
 <summary><b>English overview</b></summary>
@@ -29,7 +25,7 @@ structured extraction table.
 Requires Python 3.11+. CLI output and documentation are currently in Chinese.
 
 ```bash
-git clone https://github.com/OWNER/litflow.git && cd litflow
+git clone https://github.com/qidianlingwu/litflow.git && cd litflow
 cp config.example.toml config.toml        # 至少填上你的邮箱
 python3 -m litflow doctor
 python3 -m litflow search -q "spatial transcriptomics deconvolution" --year-from 2023
@@ -58,7 +54,7 @@ python3 -m litflow search -q "spatial transcriptomics deconvolution" --year-from
 ### 方式一：pip 安装（推荐）
 
 ```bash
-git clone https://github.com/OWNER/litflow.git
+git clone https://github.com/qidianlingwu/litflow.git
 cd litflow
 pip install .
 litflow --version
@@ -70,7 +66,7 @@ litflow --version
 ### 方式二：不安装，软链到 PATH
 
 ```bash
-git clone https://github.com/OWNER/litflow.git
+git clone https://github.com/qidianlingwu/litflow.git
 ln -sf "$(pwd)/litflow/bin/litflow" ~/.local/bin/litflow   # 或 /usr/local/bin
 litflow --version
 ```

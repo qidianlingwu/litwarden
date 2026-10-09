@@ -24,7 +24,7 @@ dependencies = []
 
 license = { text = "MIT" }
 
-authors = [{ name = "litflow contributors" }]
+authors = [{ name = "Zhu Qihan" }]
 
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -42,10 +42,9 @@ classifiers = [
 ]
 
 [project.urls]
-# 建好远程仓库后，把下面的 OWNER 换成实际 GitHub 用户名并取消注释
-# Homepage = "https://github.com/OWNER/litflow"
-# Issues = "https://github.com/OWNER/litflow/issues"
-# Documentation = "https://github.com/OWNER/litflow/tree/main/docs"
+Homepage = "https://github.com/qidianlingwu/litflow"
+Issues = "https://github.com/qidianlingwu/litflow/issues"
+Documentation = "https://github.com/qidianlingwu/litflow/tree/main/docs"
 
 [project.scripts]
 # `pip install .` 之后可直接敲 litflow。
