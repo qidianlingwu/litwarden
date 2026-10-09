@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "litflow"
+version = "0.1.0"
+description = "零依赖的科研文献工作流：多源检索 → 筛选排序 → 抓取全文 → 写入 Zotero → 回读精读笔记"
+readme = "README.md"
+requires-python = ">=3.11"
+keywords = [
+    "literature-review",
+    "systematic-review",
+    "research-tools",
+    "zotero",
+    "openalex",
+    "europe-pmc",
+    "arxiv",
+    "bibtex",
+]
+# 项目承诺零第三方依赖，因此 dependencies 必须保持为空。
+# CI 里有一道检查会在它非空时报错。
+dependencies = []
+
+license = { text = "MIT" }
+
+authors = [{ name = "litflow contributors" }]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Text Processing :: Markup :: LaTeX",
+]
+
+[project.urls]
+# 建好远程仓库后，把下面的 OWNER 换成实际 GitHub 用户名并取消注释
+# Homepage = "https://github.com/OWNER/litflow"
+# Issues = "https://github.com/OWNER/litflow/issues"
+# Documentation = "https://github.com/OWNER/litflow/tree/main/docs"
+
+[project.scripts]
+# `pip install .` 之后可直接敲 litflow。
+# 注意：默认从当前目录向上查找 config.toml，也可以显式传 --config。
+litflow = "litflow.cli:main"
+
+[tool.setuptools]
+packages = ["litflow", "litflow.adapters"]

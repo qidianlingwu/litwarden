@@ -1,0 +1,14 @@
+# litflow 刻意采用「零第三方依赖」设计。
+#
+# 原因：
+#   1. 本机是 Python 3.14.8（较新），部分第三方包尚无对应 wheel，装不上会直接卡住。
+#   2. 本项目所有能力都能用标准库实现：
+#        HTTP      -> urllib.request
+#        XML 解析  -> xml.etree.ElementTree
+#        JSON/TOML -> json / tomllib
+#        数据库    -> sqlite3
+#        BM25 排序 -> 自己实现（约 40 行）
+#        网页服务  -> http.server
+#   3. 科研数据本地处理，依赖越少越好审计。
+#
+# 因此本文件保持为空。若后续确有需要，在此追加并附版本号。

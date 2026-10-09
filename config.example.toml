@@ -1,0 +1,123 @@
+# litflow 配置模板
+# 复制为 config.toml 后按需修改：cp config.example.toml config.toml
+
+[general]
+# 数据目录（SQLite、期刊等级表、导出文件都放这里）
+data_dir = "data"
+
+# 你的邮箱。Crossref / Unpaywall / NCBI 都要求带上它，用于礼貌请求与限流豁免。
+# Unpaywall 强制要求真实邮箱，必须填。
+email = "you@example.com"
+
+# 请求间隔（秒）。对公共 API 礼貌一些，避免被封。
+# Europe PMC / PubMed 官方建议不超过每秒 3 次。
+request_interval = 0.4
+
+# 单次 HTTP 超时（秒）
+timeout = 30
+
+# TLS 策略：
+#   "auto" 第 1 次用 TLS 1.3，失败重试时自动降级到 TLS 1.2（推荐）
+#   "1.2"  固定 TLS 1.2（部分网络环境下更稳）
+#   "1.3"  固定 TLS 1.3
+tls = "auto"
+
+# 单请求最大重试次数
+retries = 4
+
+# 是否校验 HTTPS 证书。除非排查问题，否则保持 true。
+verify_ssl = true
+
+
+[sources]
+# 各数据源开关。enabled 为 true 的源才会参与检索。
+#
+# ⚠️ 下面 openalex / semanticscholar 的 api_key 是【文献数据库】的 key，
+#    不是大模型（LLM）的 key。litflow 本身不使用任何大模型 ——
+#    精读论文那一步由 Zotero-AI-Butler 独立完成。
+#    DeepSeek / OpenAI / Claude 之类的 key 请填到 Butler 的模型设置里，
+#    填在本文件不会生效（对方会返回 401）。
+#
+#    两个数据库的 key 都是免费的，但要分别去各自网站注册：
+#      OpenAlex          https://help.openalex.org/api/authentication/
+#      Semantic Scholar  https://www.semanticscholar.org/product/api#api-key-form
+#
+# 前四个源不需要任何 key，开箱即用。后两个是可选增强。
+#
+# 针对生信方向推荐组合：
+#   europepmc  = 主力，覆盖 PubMed + bioRxiv/medRxiv 预印本，带引用数与 OA 标记
+#   pubmed     = NCBI 官方，MeSH 检索能力强
+#   arxiv      = 预印本，覆盖 q-bio / eess.SP 等分类
+#   crossref   = 元数据补全与 DOI 校验
+#   openalex   = 期刊信息 + 引用数（2026 年起需要免费 key）
+#   semanticscholar = 引用数 + TLDR 摘要（需要免费 key）
+
+[sources.europepmc]
+enabled = true
+
+[sources.pubmed]
+enabled = true
+
+[sources.arxiv]
+enabled = true
+
+[sources.crossref]
+enabled = true
+
+[sources.openalex]
+# ⚠️ 填了 key 还必须把 enabled 改成 true，否则 key 会被忽略。
+enabled = false
+# OpenAlex（文献数据库）的 key。2026 年起它的匿名共享 IP 额度会被耗尽，
+# 不带 key 的请求返回 429 Insufficient budget。
+# 免费注册：https://help.openalex.org/api/authentication/
+api_key = ""
+
+[sources.semanticscholar]
+# ⚠️ 同上，enabled 必须为 true 才会生效。
+enabled = false
+# Semantic Scholar（文献数据库）的 key。
+# 免费申请：https://www.semanticscholar.org/product/api#api-key-form
+api_key = ""
+
+
+[journal_rank]
+# 期刊等级采用可插拔的多个体系。文件放在 data_dir/journal_rank/ 下。
+#
+#   sjr  = Scimago SJR 分区（Q1-Q4），官方免费 CSV，推荐默认启用
+#          下载：https://www.scimagojr.com/journalrank.php 页面底部 Export
+#   ccf  = 中国计算机学会推荐目录（A/B/C），计算机方向事实标准
+#   cas  = 中科院分区表。版权敏感，本项目不内置、不分发，
+#          如你所在单位有授权，自行导出 CSV 放到该目录即可。
+#   jcr  = JCR 分区。订阅数据，本项目不内置。
+#
+# 表格 CSV 的列名可用下面的字段映射配置。
+enabled = ["sjr"]
+
+
+[zotero]
+# Zotero 本地 API。必须先手动开启：
+#   Zotero -> 设置 -> Advanced -> 勾选
+#   "Allow other applications on this computer to communicate with Zotero"
+#
+# 读操作免认证；写操作（Zotero 10+）需要运行时申请本地 key。
+base_url = "http://127.0.0.1:23119"
+
+# 你的本地 userID。单机用户用 0 即可。
+user_id = "0"
+
+# 写入授权 key。留空则首次写入时自动向 Zotero 申请（会弹窗，选 Always Allow）。
+# 拿到后自动写入这里，之后不再弹窗。
+api_key = ""
+
+
+[butler]
+# Zotero-AI-Butler 没有对外 API，只能「投喂 PDF -> 靠它的自动扫描出笔记 -> 回读」。
+# 你需要先在 Butler 里开启：AI管家仪表盘 -> 界面设置 -> 勾选「自动扫描新文献」
+#
+# 轮询参数：投喂后每隔 interval 秒检查一次，最多等 timeout 秒
+poll_interval = 20
+poll_timeout = 1800
+
+# 阅读状态用保留标签前缀，这样在 Zotero 里也能直接筛选
+status_prefix = "wf:"
+statuses = ["未读", "在读", "已初读", "已精读"]

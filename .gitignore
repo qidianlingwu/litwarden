@@ -1,0 +1,65 @@
+# ---------------------------------------------------------------- 本地数据
+# 候选池数据库、缓存、导出文件、期刊等级表——全是运行时产物，且含你的检索记录
+data/
+
+# 个人配置（含邮箱、Zotero 设置、API key）
+config.toml
+
+# ---------------------------------------------------------------- Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# 虚拟环境
+.venv/
+venv/
+ENV/
+env/
+
+# 测试与覆盖率
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+
+# ---------------------------------------------------------------- 工具与 IDE
+# CodeBuddy 本地设置（内含本机权限记录，不随项目分发）
+.codebuddy/
+
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ---------------------------------------------------------------- macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ---------------------------------------------------------------- 其他
+*.log
+*.bak
+*.tmp

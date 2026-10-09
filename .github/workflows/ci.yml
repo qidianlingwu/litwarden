@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: 单元测试（Python ${{ matrix.python-version }} / ${{ matrix.os }}）
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # 最低支持 3.11：项目用标准库 tomllib 读 TOML，3.11 才进标准库。
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+        os: [ubuntu-latest]
+        include:
+          # macOS 是本项目的主要使用环境（Zotero 本地 API 只在本机），单独跑一遍
+          - python-version: "3.13"
+            os: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: 检查依赖确实为空
+        run: |
+          # 项目承诺零第三方依赖。requirements.txt 一旦出现真实依赖就应失败，
+          # 提醒维护者同步更新 README 与最低 Python 版本。
+          deps=$(grep -vE '^\s*(#|$)' requirements.txt || true)
+          if [ -n "$deps" ]; then
+            echo "::error::requirements.txt 中出现了第三方依赖，与零依赖设计冲突："
+            echo "$deps"
+            exit 1
+          fi
+          echo "零依赖校验通过"
+
+      - name: 语法编译检查
+        run: python -m compileall -q litflow tests
+
+      - name: 单元测试
+        run: python -m unittest discover -s tests -v
+
+      - name: CLI 冒烟测试
+        run: |
+          # 不联网、不读 config.toml 的命令，验证入口与打包没问题
+          python -m litflow --version
+          python -m litflow --help
+          chmod +x bin/litflow
+          ./bin/litflow --version
+
+  lint:
+    name: 静态检查
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: 确认没有硬编码的本机路径
+        run: |
+          # 开源后别人 clone 到你这份代码，写死的家目录会让它跑不起来
+          if grep -rnE '/(Users|home)/[A-Za-z0-9._-]+/' \
+               --include='*.py' --include='*.toml' --include='*.sh' \
+               --exclude-dir=.git . ; then
+            echo "::error::发现硬编码的本机绝对路径"
+            exit 1
+          fi
+          echo "未发现硬编码路径"
+
+      - name: 确认没有提交敏感文件
+        run: |
+          for f in config.toml data/litflow.sqlite3 .DS_Store; do
+            if git ls-files --error-unmatch "$f" >/dev/null 2>&1; then
+              echo "::error::$f 不该被提交，请检查 .gitignore"
+              exit 1
+            fi
+          done
+          echo "敏感文件未入库"

@@ -1,0 +1,29 @@
+#!/bin/sh
+# litflow 命令行入口 —— 可在任意目录调用，不必先 cd 到项目目录。
+#
+# 用法（假设项目在 <repo>）：
+#   <repo>/bin/litflow zotero check
+#
+# 也可以软链到 PATH 里，之后直接敲 litflow：
+#   ln -sf "<repo>/bin/litflow" /usr/local/bin/litflow    # 或 ~/.local/bin/litflow
+#   litflow zotero check
+#
+# 注意：本项目默认用项目根目录下的 config.toml。
+# 若想放在别处，直接调 python3 -m litflow --config /path/to/config.toml 即可。
+
+set -e
+
+# 注意：这里必须让 Python 用 realpath 解析自身路径，而不是 shell 的 dirname "$0"。
+# 因为通过软链接调用时，$0 是软链接的路径（如 /opt/homebrew/bin/litflow），
+# 直接 dirname 会算出 /opt/homebrew 这种错误的项目根目录。
+exec python3 -c '
+import os, sys
+
+self_path = os.path.realpath(sys.argv[1])          # 解析软链接，拿到脚本真实路径
+proj = os.path.dirname(os.path.dirname(self_path)) # bin/litflow -> bin -> 项目根
+
+sys.path.insert(0, proj)
+from litflow.cli import main
+
+sys.exit(main(["--config", os.path.join(proj, "config.toml")] + sys.argv[2:]))
+' "$0" "$@"

@@ -1,0 +1,101 @@
+# litflow 示例配方：空间转录组去卷积的方法论文
+#
+# 这是一个「跑得通、且每个参数都说明了为什么这样设」的完整例子。
+# 想改成自己的课题，复制一份改 [search].query 和 [filter].title_must 即可：
+#   cp recipes/spatial-transcriptomics.toml recipes/我的课题.toml
+#
+# 执行：
+#   litflow run spatial-transcriptomics              # 六个阶段全跑
+#   litflow run spatial-transcriptomics --only search,filter,export   # 只跑到导出
+
+name = "spatial-transcriptomics"
+description = "空间转录组细胞类型去卷积的方法论文（以 Q1 期刊为主）"
+
+
+# ---------------------------------------------------------------- 检索
+[search]
+query = "spatial transcriptomics deconvolution"
+year_from = 2023
+limit = 40
+
+# relevance：Europe PMC 会同时取「最新」与「高被引」两路再合并，
+# 因此能同时看到经典方法和最新方法。
+# 注意不能依赖它的默认排序——Europe PMC 不带 sort 参数时按日期倒序返回，
+# 搜一个领域只会得到当年新论文，经典文献完全不出现。
+sort = "relevance"
+
+# 留空 = 使用 config.toml 中启用的全部数据源
+sources = []
+
+# 用 Unpaywall 补全开放获取链接（逐篇请求，较慢）
+oa_enrich = false
+preprints_only = false
+
+export = []
+
+
+# ---------------------------------------------------------------- 筛选
+[filter]
+# ⚠️ 年均引用门槛会给新论文设卡，慎用。
+#    设为 2.0 时实测候选会大幅减少——新方法当年引用数普遍为 0，
+#    而「及时掌握最新方法」恰恰是文献调研的重要目标。
+#    只想看有影响力的经典工作时再打开：
+# min_cites_per_year = 2.0
+
+# 关键词匹配度下限（本地 BM25 归一化到 0-1）。
+# 按引用量排序时必须设置：数据源的 cited 排序是全局的，
+# 对模糊检索式会严重漂移（例如搜 scRNA-seq 会返回 Cell 上的
+# 自闭症外显子组测序研究这类全局高被引但不相关的论文）。
+min_keyword = 0.3
+
+# 期刊等级门槛，写法为「体系:等级」。前提是已导入对应等级表：
+#   litflow rank import sjr
+rank = { sjr = "Q1" }
+
+# 等级表收录不全时，未收录的期刊会被 rank 条件剔除。
+# 非英文期刊与预印本常常查不到，设 true 可以放宽这一点。
+rank_allow_unknown = true
+
+# ★ 最有效的单个旋钮：只保留标题里含 deconvolution 的论文。
+#   BM25 只看词频，无法区分「提出新方法」和「用现成方法做生物学分析」，
+#   而方法词出现在标题里，基本就能判定它是一篇方法论文。
+title_must = ["deconvolution"]
+
+must = []
+exclude = []
+
+# 剔除「Correction to:」「Author Correction」这类勘误记录
+# （它们是原论文的附属条目，对候选池是纯噪声）
+exclude_corrections = true
+
+oa_only = false
+only_preprints = false
+exclude_preprints = false
+
+# rank = 期刊等级优先，其次年均引用、关键词匹配度
+sort = "rank"
+
+export = ["xlsx", "csv", "md", "bib"]
+
+
+# ---------------------------------------------------------------- 写入 Zotero
+[zotero]
+enable = true
+# 目标集合不存在时会自动创建
+collection = "Spatial Transcriptomics"
+# 阅读状态标签，实际写入 wf:<状态>，便于在 Zotero 里筛选
+status = "未读"
+# include = 筛选通过的；candidate = 全部候选
+decision = "include"
+# 抓取开放获取 PDF 作为附件（只走合法 OA 链接，不绕过付费墙）
+attach_pdf = false
+# 首次试跑建议先限制条数确认流程正确：
+# top = 5
+
+
+# ---------------------------------------------------------------- 初读提炼
+[digest]
+enable = true
+# 只处理已导入 Zotero 的论文（未导入的必然没有精读笔记）
+imported_only = true
+export = ["xlsx", "csv", "md"]

@@ -1,0 +1,95 @@
+# litflow 工作流配方
+# 复制这个文件改名即可新建一套流程：cp recipe-template.toml 我的课题.toml
+# 然后：litflow run 我的课题
+
+name = ""
+description = ""
+
+# ---------------------------------------------------------------- 检索
+[search]
+query = "spatial transcriptomics deconvolution"
+# 可选：按作者 / 期刊限定
+# author = ""
+# journal = ""
+year_from = 2023
+# year_to = 2026
+
+# 每个源取回的条数
+limit = 40
+# relevance（默认，兼顾最新与经典）| cited（偏经典）| date（偏最新）
+sort = "relevance"
+# 只用这些源；留空则用 config.toml 里启用的全部
+sources = []
+
+# 用 Unpaywall 补全开放获取链接（较慢，每篇一次请求）
+oa_enrich = false
+# 只要预印本
+preprints_only = false
+
+# 检索完立刻导出候选表（可选格式：xlsx,csv,tsv,md,bib,json）
+export = []
+
+
+# ---------------------------------------------------------------- 筛选
+[filter]
+# 引用量门槛。推荐用「年均引用」，否则候选池会全是老论文
+# min_cites = 20
+min_cites_per_year = 2.0
+
+# 关键词匹配度下限（0-1）。
+# ⚠️ 按引用量排序时强烈建议加上，否则会混入全局高被引但不相关的论文
+min_keyword = 0.4
+
+# 期刊等级门槛，用「体系:等级」写法
+# rank = { sjr = "Q1" }
+# 等级表收录不全时，未收录的会被 --rank 剔除，可以设 true 放宽
+rank_allow_unknown = true
+
+# 只要标题包含的方法词——区分「提出方法」与「使用方法」最有效的旋钮
+title_must = ["deconvolution"]
+# title_must = []
+
+# 标题/摘要必须包含任一 / 包含任一即剔除
+must = []
+exclude = []
+
+# 剔除「Correction to:」这类勘误记录
+exclude_corrections = true
+
+# 只要开放获取 / 只要预印本 / 排除预印本
+oa_only = false
+only_preprints = false
+exclude_preprints = false
+
+# 排序：rank（期刊等级优先，默认）| cites | cites_per_year | year | keyword
+sort = "rank"
+# 只取前 N 篇
+# top = 50
+
+# 导出格式（可选：xlsx,csv,tsv,md,bib,json）
+export = ["xlsx", "csv", "md", "bib"]
+
+
+# ---------------------------------------------------------------- 写入 Zotero
+[zotero]
+# 设 false 则跳过这一段
+enable = true
+# 目标集合，不存在会自动创建
+collection = "litflow 导入"
+# 阅读状态标签（会写成 wf:<状态>）
+status = "未读"
+# 取哪种决策的论文：include（筛过的，推荐）| candidate（全部候选）
+decision = "include"
+# 抓取开放获取 PDF 作为附件（只走合法 OA 链接，不绕过付费墙）
+attach_pdf = false
+# 限制写入条数（首次试跑时建议设成 5）
+# top = 5
+
+
+# ---------------------------------------------------------------- 初读提炼
+[digest]
+# 设 false 则跳过这一段
+enable = true
+# 只导出已导入 Zotero 的（没导入的必然没有笔记）
+imported_only = true
+export = ["xlsx", "csv", "md"]

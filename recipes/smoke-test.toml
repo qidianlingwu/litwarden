@@ -1,0 +1,74 @@
+# 冒烟测试配方：只导入 2 篇，用来确认整条链路是通的。
+#
+# 什么时候用它：
+#   · 刚装好、还没跑过任何一次
+#   · 改过检索/筛选/导入逻辑之后想快速回归
+#   · 不想因为试跑就往 Zotero 里灌几十篇
+#
+#   litflow run smoke-test
+#
+# 它把检索规模压到最小、只导入 2 篇，几分钟内走完六个阶段。
+#
+# ⚠️ 最后两个阶段第一次跑时通常是空的，这是正常的：
+#    Butler 每篇要处理 40~60 秒，检索/导入跑完的那一刻它还没啃完。
+#    等一两分钟再补一次即可（已生成的不会重复拉）：
+#      litflow digest fetch && litflow digest export
+
+name = "smoke-test"
+description = "冒烟测试：只导入 2 篇，快速确认整条链路可用"
+
+
+# ---------------------------------------------------------------- 检索
+[search]
+query = "spatial transcriptomics deconvolution"
+year_from = 2023
+# 检索规模压到最小 —— 省时间，也省各数据源的 API 配额
+limit = 12
+sort = "relevance"
+# 留空 = 使用 config.toml 里启用的全部数据源
+sources = []
+# 逐篇补开放获取链接，较慢，冒烟测试不需要
+oa_enrich = false
+preprints_only = false
+export = []
+
+
+# ---------------------------------------------------------------- 筛选
+[filter]
+# 故意放宽：冒烟测试的目的是「链路通不通」，不是「筛得准不准」。
+# 门槛设太高会筛到不足 2 篇，反而测不出导入环节。
+min_keyword = 0.2
+rank_allow_unknown = true
+
+must = []
+exclude = []
+exclude_corrections = true
+# ★ 必须有开放获取链接，否则导入的论文没有 PDF：
+#   没 PDF 时 Butler 不会去精读，最后两个阶段必然是空的，冒烟测试也就
+#   验不到「导入 → 精读 → 回读 → 提炼表」这半条链路。
+#   （这是实测踩出来的：第一版没开这一项，跑完 6/6 阶段成功但 0 个附件。）
+oa_only = true
+only_preprints = false
+exclude_preprints = false
+
+sort = "rank"
+export = ["csv", "md"]
+
+
+# ---------------------------------------------------------------- 写入 Zotero
+[zotero]
+enable = true
+collection = "litflow 冒烟测试"
+status = "未读"
+decision = "include"
+# 抓开放获取 PDF。只有带上附件，Butler 才会去精读，后两个阶段才有内容
+attach_pdf = true
+# ← 关键：只导入前 2 篇
+top = 2
+
+
+# ---------------------------------------------------------------- 初读提炼
+[digest]
+enable = true
+imported_only = true
+export = ["csv", "md"]
