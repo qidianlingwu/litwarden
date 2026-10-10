@@ -7,6 +7,9 @@
 [![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](requirements.txt)
 [![License](https://img.shields.io/badge/license-MIT-green)](#许可证)
 
+> **第一次用、不太熟悉 GitHub？** 看 [新手上路：没用过 GitHub 也能跑起来](docs/getting-started.md)
+> —— 不用注册账号、不用编程基础，跟着做十分钟就能跑出第一份结果。
+
 <details>
 <summary><b>English overview</b></summary>
 
@@ -707,6 +710,7 @@ python3 -m unittest discover -s tests -v
 
 | 文档 | 内容 |
 |---|---|
+| [`docs/getting-started.md`](docs/getting-started.md) | 新手上路：不熟 GitHub 也能装好跑起来——下载、装 Python、配置、常见报错 |
 | [`docs/architecture.md`](docs/architecture.md) | 架构决策与取舍：为什么坚持零依赖、AI Butler 的松耦合集成方案、期刊等级数据的版权处理 |
 | [`docs/ai-research-tools-survey.md`](docs/ai-research-tools-survey.md) | 科研 AI 工具全景调研、完整流程环节划分，以及本项目在其中的定位 |
 | [`docs/testing.md`](docs/testing.md) | 测试分层与用例清单、已知问题清单、发布前验收标准 |
