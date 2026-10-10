@@ -29,6 +29,7 @@ from . import __version__
 from .adapters import build_adapters
 from .config import Config
 from .journalrank import attach_ranks
+from .preview import abstract_preview
 from .store import Store
 from .webui import INDEX_HTML
 
@@ -122,6 +123,9 @@ def paper_json(p, idx: int | None = None) -> dict[str, Any]:
         "is_oa": p.is_oa,
         "oa_url": p.oa_url,
         "doi": p.doi,
+        # 论文表要让人在**导入之前**就能判断值不值得读，所以把摘要压成速览
+        # 一起带上。完整摘要仍留在导出表的最后一列，需要看全文时去那里。
+        "abstract_preview": abstract_preview(p.abstract),
     }
     if idx is not None:
         d["__i"] = idx

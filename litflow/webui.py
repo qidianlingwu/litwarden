@@ -98,6 +98,10 @@ td.nowrap{white-space:nowrap}
 td.num{text-align:right;font-variant-numeric:tabular-nums}
 .title-cell{max-width:560px}
 .title-cell b{font-weight:600}
+/* 摘要速览：够读个大概，又不让行高失控。加在内部元素上而不是 td 上——
+   td 改 display 会破坏表格布局。完整速览挂在 td 的 title 属性上可悬停查看 */
+.abs-cell{max-width:380px;font-size:12px;line-height:1.5;color:var(--ink3);
+  display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .muted{color:var(--ink3)}
 .tag{
   display:inline-block;font-size:11px;padding:1px 7px;border-radius:5px;
@@ -563,6 +567,7 @@ const COLS = {
     { k: "_chk", t: "", w: 30 },
     { k: "_i", t: "#", cls: "num", w: 40 },
     { k: "title", t: "标题", cls: "title-cell" },
+    { k: "abstract_preview", t: "摘要速览", nosort: true },
     { k: "journal", t: "期刊" },
     { k: "year", t: "年", cls: "num" },
     { k: "cited_by", t: "引用", cls: "num" },
@@ -621,8 +626,10 @@ function renderTable(tableId, colKey, rows, opts) {
 
   const thead = el("thead"), trh = el("tr");
   cols.forEach(c => {
-    const th = el("th", "sortable", c.t);
+    // 摘要速览是给人读的，不是排序键：按它排序既没意义又会把顺序弄乱
+    const th = el("th", c.nosort ? "" : "sortable", c.t);
     if (c.w) th.style.width = c.w + "px";
+    if (c.nosort) { trh.appendChild(th); return; }
     th.onclick = () => {
       const cur = sortState[tableId];
       const dir = cur && cur.k === c.k && cur.dir === -1 ? 1 : -1;
@@ -699,6 +706,17 @@ function renderTable(tableId, colKey, rows, opts) {
       }
       if (c.k === "summary" && !row.has_note) {
         td.innerHTML = '<span class="muted">尚无笔记</span>';
+        tr.appendChild(td);
+        return;
+      }
+      if (c.k === "abstract_preview") {
+        // 空摘要要显式标出来，否则容易被误当成加载失败
+        if (!row.abstract_preview) {
+          td.innerHTML = '<span class="muted">无摘要</span>';
+        } else {
+          td.title = row.abstract_preview;   // 悬停可看完整速览
+          td.appendChild(el("div", "abs-cell", row.abstract_preview));
+        }
         tr.appendChild(td);
         return;
       }
