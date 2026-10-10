@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "litflow"
+name = "litwarden"
 version = "0.1.0"
 description = "零依赖的科研文献工作流：多源检索 → 筛选排序 → 抓取全文 → 写入 Zotero → 回读精读笔记"
 readme = "README.md"
@@ -42,14 +42,14 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/qidianlingwu/litflow"
-Issues = "https://github.com/qidianlingwu/litflow/issues"
-Documentation = "https://github.com/qidianlingwu/litflow/tree/main/docs"
+Homepage = "https://github.com/qidianlingwu/litwarden"
+Issues = "https://github.com/qidianlingwu/litwarden/issues"
+Documentation = "https://github.com/qidianlingwu/litwarden/tree/main/docs"
 
 [project.scripts]
-# `pip install .` 之后可直接敲 litflow。
+# `pip install .` 之后可直接敲 litwarden。
 # 注意：默认从当前目录向上查找 config.toml，也可以显式传 --config。
-litflow = "litflow.cli:main"
+litwarden = "litwarden.cli:main"
 
 [tool.setuptools]
-packages = ["litflow", "litflow.adapters"]
+packages = ["litwarden", "litwarden.adapters"]

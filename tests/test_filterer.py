@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import unittest
 
-from litflow.filterer import (
+from litwarden.filterer import (
     Bm25,
     Filters,
     apply,
@@ -18,7 +18,7 @@ from litflow.filterer import (
     sort_papers,
     tokenize,
 )
-from litflow.models import Paper
+from litwarden.models import Paper
 
 
 class TestTokenize(unittest.TestCase):

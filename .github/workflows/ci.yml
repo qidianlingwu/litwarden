@@ -44,7 +44,7 @@ jobs:
           echo "零依赖校验通过"
 
       - name: 语法编译检查
-        run: python -m compileall -q litflow tests
+        run: python -m compileall -q litwarden tests
 
       - name: 单元测试
         run: python -m unittest discover -s tests -v
@@ -52,10 +52,10 @@ jobs:
       - name: CLI 冒烟测试
         run: |
           # 不联网、不读 config.toml 的命令，验证入口与打包没问题
-          python -m litflow --version
-          python -m litflow --help
-          chmod +x bin/litflow
-          ./bin/litflow --version
+          python -m litwarden --version
+          python -m litwarden --help
+          chmod +x bin/litwarden
+          ./bin/litwarden --version
 
   lint:
     name: 静态检查
@@ -79,7 +79,7 @@ jobs:
 
       - name: 确认没有提交敏感文件
         run: |
-          for f in config.toml data/litflow.sqlite3 .DS_Store; do
+          for f in config.toml data/litwarden.sqlite3 .DS_Store; do
             if git ls-files --error-unmatch "$f" >/dev/null 2>&1; then
               echo "::error::$f 不该被提交，请检查 .gitignore"
               exit 1

@@ -14,8 +14,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from litflow.models import Paper
-from litflow.store import Store
+from litwarden.models import Paper
+from litwarden.store import Store
 
 
 class StoreTestCase(unittest.TestCase):

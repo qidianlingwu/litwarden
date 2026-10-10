@@ -75,7 +75,7 @@ class ZoteroClient:
         # 上一次授权拿到的是不是永久 key（弹窗点了 Always Allow）。
         # None = 还没授权过。
         self.auth_permanent: bool | None = None
-        # 拿到新 key 时的回调，由调用方决定存哪（litflow 存在本地 SQLite 的 kv_cache 里，
+        # 拿到新 key 时的回调，由调用方决定存哪（litwarden 存在本地 SQLite 的 kv_cache 里，
         # 不改用户的 config.toml）
         self.key_sink: Any = None
 
@@ -92,7 +92,7 @@ class ZoteroClient:
     def _headers(self, write: bool = False) -> dict[str, str]:
         h = {
             "Zotero-API-Version": API_VERSION,
-            "User-Agent": "litflow/0.1 (literature workflow)",
+            "User-Agent": "litwarden/0.1 (literature workflow)",
             "Accept": "application/json",
         }
         if write:
@@ -173,7 +173,7 @@ class ZoteroClient:
                 "    3. 设置 → Advanced 是否仍勾选\n"
                 "       「Allow other applications on this computer to communicate with Zotero」\n"
                 "    4. 尝试完全退出 Zotero（Cmd+Q）后重新打开\n"
-                "  确认可用：litflow zotero check"
+                "  确认可用：litwarden zotero check"
             ) from None
 
     @staticmethod
@@ -226,7 +226,7 @@ class ZoteroClient:
 
     # -------------------------------------------------- 写授权
 
-    def authorize(self, app_name: str = "litflow 文献工作流") -> str:
+    def authorize(self, app_name: str = "litwarden 文献工作流") -> str:
         """申请本地写授权。Zotero 会弹窗，选 Always Allow 可得永久 key。"""
         if not self._server_id:
             self.ping()
@@ -739,13 +739,13 @@ def download_file(
 
     # User-Agent 说明：
     #   很多出版商会直接 403 掉不带浏览器特征的请求（实测 Springer / Elsevier / Wiley
-    #   对 "litflow/0.1" 这类 UA 一律 403）。这里保留浏览器标识，同时如实标注工具身份
+    #   对 "litwarden/0.1" 这类 UA 一律 403）。这里保留浏览器标识，同时如实标注工具身份
     #   与联系方式——这是学术抓取工具常见的礼貌做法。
     #   注意：只用于抓取合法开放获取副本，不会用于绕过付费墙。
     ua = (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36 "
-        "litflow/0.1 (literature workflow; OA-only)"
+        "litwarden/0.1 (literature workflow; OA-only)"
     )
 
     last_err: Exception | None = None

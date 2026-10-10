@@ -1,6 +1,6 @@
 # 测试方案
 
-> 本文说明 litflow 的测试分层、用例清单与验收标准。
+> 本文说明 litwarden 的测试分层、用例清单与验收标准。
 > 分层的目的是把「不需要联网的」和「必须打真实 API 的」分开：前者进 CI 长期守护，后者在发布前手动跑一次。
 
 ---
@@ -166,7 +166,7 @@ PRISMA 流程图要求计数严格对齐，这一层就是守护它。
 
 ```
 ① 单元测试            python3 -m unittest discover -s tests
-② L2 契约测试          litflow doctor --online
+② L2 契约测试          litwarden doctor --online
 ③ L1 补测 → 全绿并进 CI
 ④ L5 一致性
 ⑤ L3 端到端           先限量（--top 3 写 Zotero），核对无误后放量

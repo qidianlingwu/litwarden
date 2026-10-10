@@ -14,9 +14,9 @@ Butler 永不重试，论文就永久没有笔记。
 import unittest
 from pathlib import Path
 
-from litflow import librarian as L
-from litflow.config import Config
-from litflow.models import Paper
+from litwarden import librarian as L
+from litwarden.config import Config
+from litwarden.models import Paper
 
 
 class _FakeClient:

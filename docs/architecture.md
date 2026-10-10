@@ -1,6 +1,6 @@
-# litflow 架构设计
+# litwarden 架构设计
 
-> 本文记录 litflow（本地优先的文献工作流工具）的架构决策、模块划分与实测结论，适合想理解设计意图或参与开发的读者。
+> 本文记录 litwarden（本地优先的文献工作流工具）的架构决策、模块划分与实测结论，适合想理解设计意图或参与开发的读者。
 >
 > 文档定位：架构设计说明。项目用法与命令参考见根目录 `README.md`；立项前的工具选型调研见 [`ai-research-tools-survey.md`](./ai-research-tools-survey.md)。
 

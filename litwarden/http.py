@@ -135,7 +135,7 @@ class HttpClient:
         # 这是性能关键：不加这个，每个请求都要先撞一次 TLS 1.3。
         self._host_tls: dict[str, str] = {}
         self.user_agent = (
-            f"litflow/{__version__} (literature workflow; "
+            f"litwarden/{__version__} (literature workflow; "
             f"mailto:{email or 'unknown'})"
         )
 

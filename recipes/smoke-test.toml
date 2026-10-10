@@ -5,14 +5,14 @@
 #   · 改过检索/筛选/导入逻辑之后想快速回归
 #   · 不想因为试跑就往 Zotero 里灌几十篇
 #
-#   litflow run smoke-test
+#   litwarden run smoke-test
 #
 # 它把检索规模压到最小、只导入 2 篇，几分钟内走完六个阶段。
 #
 # ⚠️ 最后两个阶段第一次跑时通常是空的，这是正常的：
 #    Butler 每篇要处理 40~60 秒，检索/导入跑完的那一刻它还没啃完。
 #    等一两分钟再补一次即可（已生成的不会重复拉）：
-#      litflow digest fetch && litflow digest export
+#      litwarden digest fetch && litwarden digest export
 
 name = "smoke-test"
 description = "冒烟测试：只导入 2 篇，快速确认整条链路可用"
@@ -58,7 +58,7 @@ export = ["csv", "md"]
 # ---------------------------------------------------------------- 写入 Zotero
 [zotero]
 enable = true
-collection = "litflow 冒烟测试"
+collection = "litwarden 冒烟测试"
 status = "未读"
 decision = "include"
 # 抓开放获取 PDF。只有带上附件，Butler 才会去精读，后两个阶段才有内容

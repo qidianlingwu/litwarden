@@ -1,10 +1,10 @@
 # 与 Zotero-AI-Butler 的集成细节（一处已修复的竞态）
 
-本文记录 litflow 写 Zotero、Butler 自动精读这条链路上的一处竞态，以及它是怎么被定位和修掉的。
+本文记录 litwarden 写 Zotero、Butler 自动精读这条链路上的一处竞态，以及它是怎么被定位和修掉的。
 
 ## 现象
 
-litflow 导入的论文，Butler 的「自动扫描新文献」有时会把任务判为失败：
+litwarden 导入的论文，Butler 的「自动扫描新文献」有时会把任务判为失败：
 
 ```
 PDF 文本提取失败：未找到 PDF 文件路径

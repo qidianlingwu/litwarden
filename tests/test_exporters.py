@@ -12,7 +12,7 @@ import unittest
 import zipfile
 from pathlib import Path
 
-from litflow.exporters import (
+from litwarden.exporters import (
     bibkey,
     render_table,
     to_bibtex,
@@ -21,7 +21,7 @@ from litflow.exporters import (
     to_markdown,
     to_xlsx,
 )
-from litflow.models import Paper
+from litwarden.models import Paper
 
 
 def sample_papers() -> list[Paper]:

@@ -12,11 +12,11 @@ import time
 import unittest
 from pathlib import Path
 
-from litflow.cli import _mask_id
-from litflow.exporters import csv_safe, to_csv
-from litflow.http import HttpClient
-from litflow.models import Paper
-from litflow.web import allowed_hosts, host_of
+from litwarden.cli import _mask_id
+from litwarden.exporters import csv_safe, to_csv
+from litwarden.http import HttpClient
+from litwarden.models import Paper
+from litwarden.web import allowed_hosts, host_of
 
 
 class TestStampCitationTime(unittest.TestCase):
@@ -28,7 +28,7 @@ class TestStampCitationTime(unittest.TestCase):
     """
 
     def test_stamps_papers_with_citations(self):
-        from litflow.finder import _stamp_citation_time
+        from litwarden.finder import _stamp_citation_time
 
         papers = [
             Paper(title="A", cited_by=10, cited_by_source="crossref"),
@@ -39,14 +39,14 @@ class TestStampCitationTime(unittest.TestCase):
             self.assertIsNotNone(p.cited_by_fetched_at, p.title)
 
     def test_leaves_citationless_papers_alone(self):
-        from litflow.finder import _stamp_citation_time
+        from litwarden.finder import _stamp_citation_time
 
         p = Paper(title="no cites", cited_by=None)
         _stamp_citation_time([p])
         self.assertIsNone(p.cited_by_fetched_at)
 
     def test_does_not_overwrite_existing_timestamp(self):
-        from litflow.finder import _stamp_citation_time
+        from litwarden.finder import _stamp_citation_time
 
         original = "2020-01-01T00:00:00+00:00"
         p = Paper(title="A", cited_by=5, cited_by_fetched_at=original)
@@ -56,7 +56,7 @@ class TestStampCitationTime(unittest.TestCase):
     def test_timestamp_is_iso8601(self):
         from datetime import datetime
 
-        from litflow.finder import _stamp_citation_time
+        from litwarden.finder import _stamp_citation_time
 
         p = Paper(title="A", cited_by=1)
         _stamp_citation_time([p])

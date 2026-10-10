@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import unittest
 
-from litflow.journalrank import (
+from litwarden.journalrank import (
     RANK_ORDER,
     _map_rows,
     _pick,

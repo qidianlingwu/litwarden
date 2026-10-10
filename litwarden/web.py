@@ -222,7 +222,7 @@ class Handler(BaseHTTPRequestHandler):
     cfg: Config
     jobs: Jobs
     allowed_hosts: set[str] = set(_LOOPBACK_HOSTS)
-    server_version = f"litflow/{__version__}"
+    server_version = f"litwarden/{__version__}"
 
     @property
     def store(self) -> Store:
@@ -643,7 +643,7 @@ class Handler(BaseHTTPRequestHandler):
         if not keys:
             raise ValueError("没有选中的论文")
         opts = ImportOptions(
-            collection=(p.get("collection") or "litflow 导入").strip(),
+            collection=(p.get("collection") or "litwarden 导入").strip(),
             status=(p.get("status") or "未读"),
             attach_pdf=bool(p.get("attach_pdf")),
         )
@@ -890,7 +890,7 @@ def serve(cfg: Config, host: str = "127.0.0.1", port: int = 8765,
         raise RuntimeError(f"{host}:{port}~{port + 11} 都不可用：{last_err}")
 
     url = f"http://{host}:{p}/"
-    print(f"litflow Web 界面已启动：{url}")
+    print(f"litwarden Web 界面已启动：{url}")
     print(f"  数据目录：{cfg.data_dir}")
     print(f"  候选池：{store.count_papers()} 篇")
     if host not in ("127.0.0.1", "localhost", "::1"):

@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS kv_cache (
     fetched_at TEXT
 );
 
--- litflow 候选池 与 Zotero 条目 的对应关系。
+-- litwarden 候选池 与 Zotero 条目 的对应关系。
 -- M3 要靠它知道「哪篇论文在 Zotero 里对应哪个条目」，才能回读 Butler 的笔记。
 CREATE TABLE IF NOT EXISTS zotero_links (
     paper_key     TEXT PRIMARY KEY,

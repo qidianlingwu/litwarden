@@ -12,7 +12,7 @@ INDEX_HTML = r"""<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>litflow · 文献工作流</title>
+<title>litwarden · 文献工作流</title>
 <style>
 :root{
   --bg:#f7f8fa; --panel:#fff; --line:#e3e6ec; --line2:#eef0f4;
@@ -149,7 +149,7 @@ details.note pre{
 <body>
 
 <header>
-  <h1>litflow</h1>
+  <h1>litwarden</h1>
   <span class="pill" id="p-ver">…</span>
   <div class="pills" id="p-overview"></div>
 </header>
@@ -320,7 +320,7 @@ details.note pre{
     <div class="card">
       <h2 style="font-size:13.5px">写入设置</h2>
       <div class="grid" style="margin-top:10px">
-        <label class="f">目标集合<input id="z-collection" value="litflow 导入"></label>
+        <label class="f">目标集合<input id="z-collection" value="litwarden 导入"></label>
         <label class="f">阅读状态
           <select id="z-status-sel">
             <option value="未读">未读</option>
@@ -1094,7 +1094,7 @@ $("btn-zimport").onclick = async () => {
   try {
     const res = await runZoteroJob("/api/zotero/import", {
       run_id: +$("run-select").value, keys,
-      collection: $("z-collection").value.trim() || "litflow 导入",
+      collection: $("z-collection").value.trim() || "litwarden 导入",
       status: $("z-status-sel").value,
       attach_pdf: $("z-attach").checked,
     }, "写入完成");
@@ -1136,7 +1136,7 @@ function renderZoteroResult(res, isAudit) {
       $("btn-zapdf").style.display = res.no_pdf_fixable ? "inline-block" : "none";
       const hint = el("div", "hint");
       hint.textContent = "没有 PDF 的条目 Butler 无法精读。可点「只补 PDF」批量补抓，"
-        + "或用 `litflow zotero attach-pdf` 并查看导出的失败清单。";
+        + "或用 `litwarden zotero attach-pdf` 并查看导出的失败清单。";
       body.appendChild(hint);
     }
     return;

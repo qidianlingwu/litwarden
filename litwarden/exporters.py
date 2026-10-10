@@ -202,7 +202,7 @@ def to_bibtex(papers: Iterable[Paper], path: Path) -> Path:
         if p.abstract:
             fields.append(("abstract", _bib_escape(p.abstract[:1500])))
         if p.keyword_score is not None:
-            fields.append(("keywords", f"litflow_score={p.keyword_score}"))
+            fields.append(("keywords", f"litwarden_score={p.keyword_score}"))
         if p.journal_rank:
             fields.append(
                 ("note", _bib_escape("rank: " + "; ".join(f"{k}={v}" for k, v in p.journal_rank.items())))
@@ -498,5 +498,5 @@ def render_table(papers: list[Paper], query: str = "", limit: int = 30) -> str:
         "列说明：年均=年均引用（总引用/发表年数）  关键=关键词匹配度(0-1)  "
         "等级=期刊分区  OA=开放获取(✓有/✗无/·未知)"
     )
-    lines.append("提示：想按等级或引用排序用 `litflow filter`，检索结果这里只按关键词匹配度排。")
+    lines.append("提示：想按等级或引用排序用 `litwarden filter`，检索结果这里只按关键词匹配度排。")
     return "\n".join(lines)

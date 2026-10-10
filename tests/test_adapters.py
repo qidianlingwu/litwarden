@@ -11,12 +11,12 @@ from __future__ import annotations
 import unittest
 from typing import Any
 
-from litflow.adapters import SearchQuery
-from litflow.adapters.arxiv import _text_clause
-from litflow.adapters.base import Adapter, content_terms
-from litflow.adapters.openalex import OpenAlexAdapter
-from litflow.adapters.semanticscholar import SemanticScholarAdapter
-from litflow.http import HttpError
+from litwarden.adapters import SearchQuery
+from litwarden.adapters.arxiv import _text_clause
+from litwarden.adapters.base import Adapter, content_terms
+from litwarden.adapters.openalex import OpenAlexAdapter
+from litwarden.adapters.semanticscholar import SemanticScholarAdapter
+from litwarden.http import HttpError
 
 
 class StubHttp:

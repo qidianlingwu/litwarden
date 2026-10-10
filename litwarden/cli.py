@@ -1,4 +1,4 @@
-"""litflow 命令行入口。
+"""litwarden 命令行入口。
 
 M1（本次交付）可用命令：
     doctor              环境体检：配置 / 数据源连通性 / Zotero 本地 API / 等级表
@@ -81,7 +81,7 @@ def _split(csv_arg: str | None) -> list[str]:
 def _load_run_papers(store: Store, run_id: int | None) -> tuple[int, list[Paper]]:
     rid = run_id or store.latest_run_id()
     if rid is None:
-        raise SystemExit("还没有任何运行记录，先执行 `litflow search`。")
+        raise SystemExit("还没有任何运行记录，先执行 `litwarden search`。")
     rows = store.get_run_papers(rid)
     if not rows:
         raise SystemExit(f"运行 #{rid} 里没有论文记录。")
@@ -121,7 +121,7 @@ def _err(msg: str) -> int:
 
 
 def cmd_doctor(args: argparse.Namespace, cfg: Config) -> int:
-    print(f"litflow {__version__}  环境体检")
+    print(f"litwarden {__version__}  环境体检")
     print("=" * 62)
 
     store = Store(cfg.db_path)
@@ -171,7 +171,7 @@ def cmd_doctor(args: argparse.Namespace, cfg: Config) -> int:
     print("期刊等级表：")
     st = store.journal_rank_stats()
     if not st:
-        print(f"  （空）请把等级表放到 {cfg.journal_rank_dir}/ 后执行 `litflow rank import sjr`")
+        print(f"  （空）请把等级表放到 {cfg.journal_rank_dir}/ 后执行 `litwarden rank import sjr`")
         print("  SJR 官方免费 CSV：https://www.scimagojr.com/journalrank.php （页底 Export）")
     for k, v in st.items():
         print(f"  {k:6} {v} 条")
@@ -328,7 +328,7 @@ def cmd_search(args: argparse.Namespace, cfg: Config) -> int:
     print(f"已保存 运行 #{run_id}（{len(papers)} 篇候选）\n")
 
     # 检索阶段的预览按关键词匹配度排，便于一眼看出哪几篇最相关；
-    # 正式的等级/引用排序留给 `litflow filter --sort rank`
+    # 正式的等级/引用排序留给 `litwarden filter --sort rank`
     preview = sorted(papers, key=lambda p: p.keyword_score or 0.0, reverse=True)
 
     print(render_table(preview, query=q.describe(), limit=args.preview))
@@ -340,7 +340,7 @@ def cmd_search(args: argparse.Namespace, cfg: Config) -> int:
         for p in paths:
             print(f"已导出：{p}")
     print()
-    print(f"下一步：litflow filter --run {run_id} --min-cites 20 --rank sjr:Q2 --export csv")
+    print(f"下一步：litwarden filter --run {run_id} --min-cites 20 --rank sjr:Q2 --export csv")
     return 0
 
 
@@ -399,7 +399,7 @@ def cmd_filter(args: argparse.Namespace, cfg: Config) -> int:
     if missing:
         print(f"⚠️  等级体系 {', '.join(missing)} 的等级表尚未导入，"
               f"用它作门槛会把候选全部剔除。")
-        print(f"    先导入：litflow rank import {missing[0]}")
+        print(f"    先导入：litwarden rank import {missing[0]}")
         print(f"    或在筛选时去掉 --rank，或加 --rank-allow-unknown 放宽未收录的期刊。")
         print()
 
@@ -458,7 +458,7 @@ def cmd_runs(args: argparse.Namespace, cfg: Config) -> int:
         print(f"{r['id']:<6}{(r['created_at'] or '')[:19]:<22}"
               f"{stats.get('deduped', '-'):<8}{(r['label'] or '')[:40]}")
     print()
-    print("查看某次结果：litflow show --run <编号>")
+    print("查看某次结果：litwarden show --run <编号>")
     return 0
 
 
@@ -575,7 +575,7 @@ def cmd_zotero(args: argparse.Namespace, cfg: Config) -> int:
             print("     首次导入时 Zotero 会弹窗，选「Always Allow」即可，之后不再打扰。")
         ov = status_overview(cfg, store)
         print()
-        print(f"  litflow 已导入 Zotero 的文献：{ov['total']} 篇")
+        print(f"  litwarden 已导入 Zotero 的文献：{ov['total']} 篇")
         if ov["total"]:
             for s, n in ov["by_status"]:
                 print(f"     {ov['prefix']}{s:<8} {n}")
@@ -604,9 +604,9 @@ def cmd_zotero(args: argparse.Namespace, cfg: Config) -> int:
     if action == "status":
         ov = status_overview(cfg, store)
         if not ov["total"]:
-            print("还没有任何文献导入 Zotero。先跑 `litflow zotero import --run <编号>`")
+            print("还没有任何文献导入 Zotero。先跑 `litwarden zotero import --run <编号>`")
             return 0
-        print(f"litflow 已导入 {ov['total']} 篇，阅读状态：")
+        print(f"litwarden 已导入 {ov['total']} 篇，阅读状态：")
         print()
         width = max(len(s) for s, _ in ov["by_status"]) if ov["by_status"] else 4
         for s, n in ov["by_status"]:
@@ -617,7 +617,7 @@ def cmd_zotero(args: argparse.Namespace, cfg: Config) -> int:
         for k, v in ov["other"].items():
             print(f"  {k:<{width}}  {v:>4}")
         print()
-        print("改状态：litflow zotero mark 在读 --run <编号> --top 5")
+        print("改状态：litwarden zotero mark 在读 --run <编号> --top 5")
         return 0
 
     # ---------------- sync：从 Zotero 反向重建本地关联表
@@ -633,7 +633,7 @@ def cmd_zotero(args: argparse.Namespace, cfg: Config) -> int:
             print(f"  · {p}")
         if matched:
             print()
-            print("现在可以用：litflow zotero mark <状态> --run <编号>")
+            print("现在可以用：litwarden zotero mark <状态> --run <编号>")
         return 0
 
     # ---------------- audit：批量体检，不用逐条点开
@@ -652,7 +652,7 @@ def cmd_zotero(args: argparse.Namespace, cfg: Config) -> int:
             return _err(str(e))
 
         if not rep["total"]:
-            print("没有任何已导入 Zotero 的文献。先跑 `litflow zotero import --run <编号>`")
+            print("没有任何已导入 Zotero 的文献。先跑 `litwarden zotero import --run <编号>`")
             return 0
 
         print(f"已导入并关联的文献：{rep['total']} 篇")
@@ -679,7 +679,7 @@ def cmd_zotero(args: argparse.Namespace, cfg: Config) -> int:
                 print(f"  …另有 {len(missing_pdf) - 20} 条")
             print()
             if rep["no_pdf_fixable"]:
-                print("批量补抓：litflow zotero attach-pdf")
+                print("批量补抓：litwarden zotero attach-pdf")
         return 0
 
     # ---------------- attach-pdf：只补附件，不新建条目
@@ -697,7 +697,7 @@ def cmd_zotero(args: argparse.Namespace, cfg: Config) -> int:
                 return _err(str(e))
             links = store.zotero_links()
         if not links:
-            return _err("还没有任何已导入 Zotero 的文献。先跑 `litflow zotero import --run <编号>`。")
+            return _err("还没有任何已导入 Zotero 的文献。先跑 `litwarden zotero import --run <编号>`。")
 
         cand = [
             p for p in store.get_papers()
@@ -714,7 +714,7 @@ def cmd_zotero(args: argparse.Namespace, cfg: Config) -> int:
             cand = cand[: args.top]
         if not cand:
             print("没有可补抓的对象（要么都已有附件，要么都没有开放获取链接）。")
-            print("用 `litflow zotero audit` 看详细情况。")
+            print("用 `litwarden zotero audit` 看详细情况。")
             return 0
 
         print(f"准备为 {len(cand)} 篇补抓开放获取 PDF（只走合法 OA 链接，不绕过付费墙）")
@@ -792,7 +792,7 @@ def cmd_zotero(args: argparse.Namespace, cfg: Config) -> int:
             print("（里面含 DOI 与 EuropePMC 全文 XML 链接，可用机构 VPN 或浏览器批量获取）")
 
         print()
-        print("复查：litflow zotero audit")
+        print("复查：litwarden zotero audit")
         return 0
 
     # ---------------- cleanup-empty
@@ -840,7 +840,7 @@ def cmd_zotero(args: argparse.Namespace, cfg: Config) -> int:
     # ---------------- import
     if action == "import":
         opts = ImportOptions(
-            collection=args.collection or "litflow 导入",
+            collection=args.collection or "litwarden 导入",
             # 注意：不能直接写 args.status。未传 --status 时它是 None，
             # 会把 ImportOptions 里 "未读" 的默认值覆盖掉，导致状态标签丢失。
             status=args.status or "未读",
@@ -879,7 +879,7 @@ def cmd_zotero(args: argparse.Namespace, cfg: Config) -> int:
                 print(f"    · 另有 {len(res.pdf_problems) - 5} 篇")
         print()
         print("下一步：")
-        print(f"  litflow zotero status                 # 看阅读状态分布")
+        print(f"  litwarden zotero status                 # 看阅读状态分布")
         print(f"  在 Zotero 里确认条目 → 开启 AI Butler 的「自动扫描新文献」")
         return 0
 
@@ -888,7 +888,7 @@ def cmd_zotero(args: argparse.Namespace, cfg: Config) -> int:
         # 支持两种写法：`mark 在读` 与 `mark --status 在读`
         status = args.status or args.value
         if not status:
-            return _err("mark 需要指定状态，例如：litflow zotero mark 在读 --run 11")
+            return _err("mark 需要指定状态，例如：litwarden zotero mark 在读 --run 11")
         try:
             ok, problems = set_status(cfg, store, client, papers, status)
         except (ZoteroError, ValueError) as e:
@@ -925,7 +925,7 @@ def cmd_digest(args: argparse.Namespace, cfg: Config) -> int:
         rep = digest_status(cfg, store)
         if not rep["total"]:
             print("还没有已导入 Zotero 的文献。")
-            print("先跑：litflow zotero import --run <编号> --attach-pdf")
+            print("先跑：litwarden zotero import --run <编号> --attach-pdf")
             return 0
         total = rep["total"]
         print(f"初读提炼进度（共 {total} 篇已导入 Zotero）")
@@ -948,12 +948,12 @@ def cmd_digest(args: argparse.Namespace, cfg: Config) -> int:
 
         if rep["no_pdf"]:
             print()
-            print("⚠️ 缺 PDF 的没法精读。补抓：litflow zotero attach-pdf")
+            print("⚠️ 缺 PDF 的没法精读。补抓：litwarden zotero attach-pdf")
         if rep["pending"]:
             print()
             print("待精读的在 Butler 里排队。确认已开启：")
             print("  AI Butler 仪表盘 → 界面设置 → 勾选「自动扫描新文献」")
-            print("拉取笔记：litflow digest fetch")
+            print("拉取笔记：litwarden digest fetch")
         return 0
 
     # ---------------- fetch
@@ -961,7 +961,7 @@ def cmd_digest(args: argparse.Namespace, cfg: Config) -> int:
         client = _zotero_client(cfg, store)
         links = store.zotero_links()
         if not links:
-            return _err("还没有已导入 Zotero 的文献。先跑 `litflow zotero import`。")
+            return _err("还没有已导入 Zotero 的文献。先跑 `litwarden zotero import`。")
 
         papers = [p for p in store.get_papers()
                   if p.key in links and links[p.key].get("attached_pdf")]
@@ -969,7 +969,7 @@ def cmd_digest(args: argparse.Namespace, cfg: Config) -> int:
             papers = papers[: args.top]
         if not papers:
             print("没有带 PDF 的已导入文献，Butler 无从精读。")
-            print("先补抓 PDF：litflow zotero attach-pdf")
+            print("先补抓 PDF：litwarden zotero attach-pdf")
             return 0
 
         print(f"回读 {len(papers)} 篇文献的 Butler 笔记（纯读请求，可反复执行）")
@@ -991,7 +991,7 @@ def cmd_digest(args: argparse.Namespace, cfg: Config) -> int:
         print()
         if rep.no_note:
             print("Butler 可能还在处理，稍后重跑本命令即可（已生成的不会重复拉）。")
-        print("导出汇总表：litflow digest export")
+        print("导出汇总表：litwarden digest export")
         return 0
 
     # ---------------- export
@@ -1024,7 +1024,7 @@ def cmd_digest(args: argparse.Namespace, cfg: Config) -> int:
         if done < len(rows):
             print()
             print(f"提示：{len(rows) - done} 篇还没有笔记，导出内容里对应行是空的。")
-            print("先 `litflow digest fetch` 回读一遍，等 Butler 处理完再导出。")
+            print("先 `litwarden digest fetch` 回读一遍，等 Butler 处理完再导出。")
         return 0
 
     # ---------------- show
@@ -1051,7 +1051,7 @@ def cmd_digest(args: argparse.Namespace, cfg: Config) -> int:
             print(f"笔记数：{len(notes)}")
             print("=" * 70)
             if not notes:
-                print("（还没有笔记。先 litflow digest fetch，并确认 Butler 已开启自动扫描）")
+                print("（还没有笔记。先 litwarden digest fetch，并确认 Butler 已开启自动扫描）")
                 return 0
             from .digester import html_to_text
 
@@ -1071,7 +1071,7 @@ def cmd_digest(args: argparse.Namespace, cfg: Config) -> int:
         print(f"DOI ：{target.doi}")
         print("=" * 70)
         if not note.has_content:
-            print("（还没有笔记。先 litflow digest fetch，并确认 Butler 已开启自动扫描）")
+            print("（还没有笔记。先 litwarden digest fetch，并确认 Butler 已开启自动扫描）")
             return 0
         from .digester import FIELD_LABELS
 
@@ -1114,14 +1114,14 @@ def cmd_recipe(args: argparse.Namespace, cfg: Config) -> int:
         print("新建一套流程：")
         print(f"  cp \"{d}/recipe-template.toml\" \"{d}/我的课题.toml\"")
         print("  # 编辑里面的检索词与筛选条件")
-        print("  litflow run 我的课题")
+        print("  litwarden run 我的课题")
         return 0
 
     if action == "list":
         rs = list_recipes(cfg)
         if not rs:
             print(f"{recipes_dir(cfg)} 下还没有配方。")
-            print("先生成模板：litflow recipe init")
+            print("先生成模板：litwarden recipe init")
             return 0
         print(f"{'名字':<26}{'检索式':<40}阶段")
         print("-" * 92)
@@ -1132,12 +1132,12 @@ def cmd_recipe(args: argparse.Namespace, cfg: Config) -> int:
             stages = [s for s in STAGE_LABELS if r.stage_enabled(s)]
             print(f"{r.name[:24]:<26}{q:<40}{'→'.join(stages)}")
         print()
-        print("执行：litflow run <名字>          查看：litflow recipe show <名字>")
+        print("执行：litwarden run <名字>          查看：litwarden recipe show <名字>")
         return 0
 
     if action == "show":
         if not args.name:
-            return _err("show 需要指定配方名：litflow recipe show <名字>")
+            return _err("show 需要指定配方名：litwarden recipe show <名字>")
         try:
             r = load_recipe(cfg, args.name)
         except Exception as e:  # noqa: BLE001
@@ -1169,8 +1169,8 @@ def cmd_run(args: argparse.Namespace, cfg: Config) -> int:
             mark = "✓" if recipe.stage_enabled(s) else "（已禁用）"
             print(f"  {s:<16}{STAGE_LABELS[s]:<18}{mark}")
         print()
-        print("只跑某几段：litflow run <配方> --only filter,export")
-        print("跳过某几段：litflow run <配方> --skip zotero")
+        print("只跑某几段：litwarden run <配方> --only filter,export")
+        print("跳过某几段：litwarden run <配方> --skip zotero")
         return 0
 
     only = _split(args.only)
@@ -1241,11 +1241,11 @@ def cmd_web(args: argparse.Namespace, cfg: Config) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
-        prog="litflow",
+        prog="litwarden",
         description="本地优先的文献工作流：检索 -> 筛选 -> 初读提炼 -> 管理",
     )
     p.add_argument("--config", help="指定 config.toml 路径")
-    p.add_argument("-V", "--version", action="version", version=f"litflow {__version__}")
+    p.add_argument("-V", "--version", action="version", version=f"litwarden {__version__}")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     d = sub.add_parser("doctor", help="环境体检")
@@ -1334,9 +1334,9 @@ def build_parser() -> argparse.ArgumentParser:
                         "cleanup-empty=清理上传失败留下的空壳附件")
     z.add_argument("--yes", action="store_true", help="cleanup-empty 时确认删除")
     z.add_argument("value", nargs="?",
-                   help="mark 动作的状态值，如：litflow zotero mark 在读 --run 11")
+                   help="mark 动作的状态值，如：litwarden zotero mark 在读 --run 11")
     z.add_argument("--run", type=int, help="运行编号（默认最近一次）")
-    z.add_argument("--collection", help='目标集合名，默认「litflow 导入」')
+    z.add_argument("--collection", help='目标集合名，默认「litwarden 导入」')
     z.add_argument("--status", help="阅读状态（import 默认未读；mark 时必填）")
     z.add_argument("--decision", choices=["candidate", "include", "exclude"],
                    help="只处理该次运行中某种决策的论文（通常用 include）")

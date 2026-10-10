@@ -1,4 +1,4 @@
-# litflow 配置模板
+# litwarden 配置模板
 # 复制为 config.toml 后按需修改：cp config.example.toml config.toml
 
 [general]
@@ -33,7 +33,7 @@ verify_ssl = true
 # 各数据源开关。enabled 为 true 的源才会参与检索。
 #
 # ⚠️ 下面 openalex / semanticscholar 的 api_key 是【文献数据库】的 key，
-#    不是大模型（LLM）的 key。litflow 本身不使用任何大模型 ——
+#    不是大模型（LLM）的 key。litwarden 本身不使用任何大模型 ——
 #    精读论文那一步由 Zotero-AI-Butler 独立完成。
 #    DeepSeek / OpenAI / Claude 之类的 key 请填到 Butler 的模型设置里，
 #    填在本文件不会生效（对方会返回 401）。

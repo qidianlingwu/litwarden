@@ -12,8 +12,8 @@ Zotero 之后。本模块提供「首句 + 末两句」的速览，让摘要可�
 
 import unittest
 
-from litflow.models import Paper
-from litflow.preview import abstract_preview, split_sentences
+from litwarden.models import Paper
+from litwarden.preview import abstract_preview, split_sentences
 
 EN = (
     "Reconstructing population dynamics from unlabeled samples is hard. "
@@ -247,7 +247,7 @@ class TestWebIntegration(unittest.TestCase):
     """论文表要用的字段必须真的被序列化出去，否则前端加列也拿不到值。"""
 
     def test_paper_json_exposes_preview(self):
-        from litflow.web import paper_json
+        from litwarden.web import paper_json
 
         # 注意 Paper.key 是只读属性（由 DOI > PMID > arXiv > 标题+年份 派生），
         # 不能当构造参数传 —— 这里踩过一次
@@ -257,14 +257,14 @@ class TestWebIntegration(unittest.TestCase):
         self.assertTrue(d["abstract_preview"].startswith("Reconstructing"))
 
     def test_paper_json_preview_is_empty_without_abstract(self):
-        from litflow.web import paper_json
+        from litwarden.web import paper_json
 
         d = paper_json(Paper(title="No abstract here"))
         self.assertEqual(d.get("abstract_preview"), "")
 
     def test_full_abstract_is_not_sent_to_the_table(self):
         """列表接口只带速览。完整摘要中位 1293 字符，几百篇一起传会把页面拖垮。"""
-        from litflow.web import paper_json
+        from litwarden.web import paper_json
 
         d = paper_json(Paper(title="Long one", abstract=EN))
         self.assertLess(len(d["abstract_preview"]), len(EN))
@@ -274,7 +274,7 @@ class TestWebIntegration(unittest.TestCase):
         import re
         from pathlib import Path
 
-        src = Path(__file__).resolve().parents[1] / "litflow" / "webui.py"
+        src = Path(__file__).resolve().parents[1] / "litwarden" / "webui.py"
         text = src.read_text(encoding="utf-8")
         m = re.search(r"papers:\s*\[(.*?)\n  \]", text, re.S)
         self.assertIsNotNone(m, "没能定位 COLS.papers")

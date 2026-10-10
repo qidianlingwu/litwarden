@@ -1,8 +1,8 @@
-# litflow
+# litwarden
 
 本地优先的科研文献工作流：查找 → 筛选 → 初读提炼 → 管理
 
-[![CI](https://github.com/qidianlingwu/litflow/actions/workflows/ci.yml/badge.svg)](https://github.com/qidianlingwu/litflow/actions/workflows/ci.yml)
+[![CI](https://github.com/qidianlingwu/litwarden/actions/workflows/ci.yml/badge.svg)](https://github.com/qidianlingwu/litwarden/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](requirements.txt)
 [![License](https://img.shields.io/badge/license-MIT-green)](#许可证)
@@ -13,7 +13,7 @@
 <details>
 <summary><b>English overview</b></summary>
 
-`litflow` is a local-first literature workflow for researchers. It searches
+`litwarden` is a local-first literature workflow for researchers. It searches
 several open bibliographic sources (Europe PMC, PubMed, arXiv, Crossref),
 de-duplicates and ranks the results, writes the selected papers into a local
 Zotero library, then reads back the AI-generated reading notes to produce a
@@ -28,10 +28,10 @@ structured extraction table.
 Requires Python 3.11+. CLI output and documentation are currently in Chinese.
 
 ```bash
-git clone https://github.com/qidianlingwu/litflow.git && cd litflow
+git clone https://github.com/qidianlingwu/litwarden.git && cd litwarden
 cp config.example.toml config.toml        # 至少填上你的邮箱
-python3 -m litflow doctor
-python3 -m litflow search -q "spatial transcriptomics deconvolution" --year-from 2023
+python3 -m litwarden doctor
+python3 -m litwarden search -q "spatial transcriptomics deconvolution" --year-from 2023
 ```
 
 </details>
@@ -44,7 +44,7 @@ python3 -m litflow search -q "spatial transcriptomics deconvolution" --year-from
 |---|---|---|
 | Python | 3.11+ | 用到标准库 `tomllib`，3.11 才进标准库 |
 | 第三方依赖 | 零 | 全部标准库实现，无需 `pip install` |
-| 操作系统 | macOS / Linux | 入口脚本 `bin/litflow` 是 POSIX shell |
+| 操作系统 | macOS / Linux | 入口脚本 `bin/litwarden` 是 POSIX shell |
 | Zotero | 10+ | 写接口需要 10+，只读则更低版本即可 |
 | Zotero-AI-Butler | 可选 | 仅「初读提炼」环节需要，不装则跳过该阶段 |
 
@@ -57,35 +57,35 @@ python3 -m litflow search -q "spatial transcriptomics deconvolution" --year-from
 ### 方式一：pip 安装（推荐）
 
 ```bash
-git clone https://github.com/qidianlingwu/litflow.git
-cd litflow
+git clone https://github.com/qidianlingwu/litwarden.git
+cd litwarden
 pip install .
-litflow --version
+litwarden --version
 ```
 
-装完在任何目录都能直接敲 `litflow`。配置默认从当前目录向上查找 `config.toml`，
+装完在任何目录都能直接敲 `litwarden`。配置默认从当前目录向上查找 `config.toml`，
 也可以用 `--config /path/to/config.toml` 显式指定。
 
 ### 方式二：不安装，软链到 PATH
 
 ```bash
-git clone https://github.com/qidianlingwu/litflow.git
-ln -sf "$(pwd)/litflow/bin/litflow" ~/.local/bin/litflow   # 或 /usr/local/bin
-litflow --version
+git clone https://github.com/qidianlingwu/litwarden.git
+ln -sf "$(pwd)/litwarden/bin/litwarden" ~/.local/bin/litwarden   # 或 /usr/local/bin
+litwarden --version
 ```
 
-`bin/litflow` 用 `os.path.realpath` 解析自身真实路径来定位项目根目录，
+`bin/litwarden` 用 `os.path.realpath` 解析自身真实路径来定位项目根目录，
 因此通过软链调用也不会算错目录（常见的坑：用 shell 的 `dirname "$0"`，
 在软链场景下会得到软链所在目录而非项目目录）。
 
 ### 方式三：什么都不装
 
 ```bash
-cd litflow
-python3 -m litflow doctor
+cd litwarden
+python3 -m litwarden doctor
 ```
 
-`python3 -m litflow` 必须在项目目录内执行，否则报 `No module named litflow`。
+`python3 -m litwarden` 必须在项目目录内执行，否则报 `No module named litwarden`。
 
 ---
 
@@ -98,13 +98,13 @@ python3 -m litflow doctor
 cp config.example.toml config.toml
 
 # 2. 环境体检：检查数据源连通性、HTTPS 证书、Zotero、等级表
-litflow doctor
+litwarden doctor
 
 # 3. 检索：默认 4 个数据源，都不需要 API key
-litflow search -q "spatial transcriptomics deconvolution" --year-from 2023
+litwarden search -q "spatial transcriptomics deconvolution" --year-from 2023
 
 # 4. 筛选：期刊等级 + 年均引用 + 关键词匹配度下限
-litflow filter --run 1 --rank sjr:Q1 \
+litwarden filter --run 1 --rank sjr:Q1 \
     --min-cites-per-year 2 --min-keyword 0.3 --sort rank \
     --show-reasons --export xlsx,csv,md,bib
 ```
@@ -186,7 +186,7 @@ litflow filter --run 1 --rank sjr:Q1 \
 
 ```bash
 # "deconvolution" 出现在标题里，基本就说明它是一篇方法论文
-python3 -m litflow filter --run <N> --title-must deconvolution
+python3 -m litwarden filter --run <N> --title-must deconvolution
 ```
 
 实测效果：121 篇候选，剔除 68 篇标题不含该方法词的，剩下的全是方法论文。
@@ -222,7 +222,7 @@ python3 -m litflow filter --run <N> --title-must deconvolution
 导入方式：把文件放到 `data/journal_rank/`，文件名包含体系名（如 `sjr_2024.csv`），然后
 
 ```bash
-python3 -m litflow rank import sjr
+python3 -m litwarden rank import sjr
 ```
 
 CSV/JSON 均可，列名自动探测（中英文都认）。SJR 官方导出用分号分隔且表头拆两行，已处理。
@@ -240,7 +240,7 @@ CSV/JSON 均可，列名自动探测（中英文都认）。SJR 官方导出用�
 ├── config.example.toml      # 带注释的模板
 ├── requirements.txt         # 空（零依赖说明）
 ├── docs/                    # 调研报告与架构设计
-├── litflow/
+├── litwarden/
 │   ├── cli.py               # 命令行入口
 │   ├── config.py            # 配置加载与校验
 │   ├── models.py            # Paper 模型、标识归一化、跨源去重
@@ -307,24 +307,24 @@ Crossref 的 `is-referenced-by-count` 与 OpenAlex 的 `cited_by_count` 差异�
 
 ```bash
 # 体检：确认本地 API 可用、写授权是否已缓存
-python3 -m litflow zotero check
+python3 -m litwarden zotero check
 
 # 列出本机 Zotero 里的集合
-python3 -m litflow zotero collections
+python3 -m litwarden zotero collections
 
 # 导入：把某次运行里「已纳入」的论文写进 Zotero
-python3 -m litflow zotero import --run 11 --decision include \
+python3 -m litwarden zotero import --run 11 --decision include \
     --collection "空间转录组" --status 未读
 
 # 顺便抓取开放获取 PDF 作为附件（只走合法 OA 链接）
-python3 -m litflow zotero import --run 11 --oa --attach-pdf
+python3 -m litwarden zotero import --run 11 --oa --attach-pdf
 
 # 阅读状态
-python3 -m litflow zotero status
-python3 -m litflow zotero mark 在读 --run 11 --top 5
+python3 -m litwarden zotero status
+python3 -m litwarden zotero mark 在读 --run 11 --top 5
 
 # 清理上传失败留下的空壳附件
-python3 -m litflow zotero cleanup-empty --yes
+python3 -m litwarden zotero cleanup-empty --yes
 ```
 
 ### Zotero 参数
@@ -332,7 +332,7 @@ python3 -m litflow zotero cleanup-empty --yes
 | 参数 | 说明 |
 |---|---|
 | `--run N` / `--decision` / `--top N` / `--oa` | 选哪些论文（通常用 `--decision include` 取筛过的） |
-| `--collection "名字"` | 目标集合，不存在会自动创建。默认 `litflow 导入` |
+| `--collection "名字"` | 目标集合，不存在会自动创建。默认 `litwarden 导入` |
 | `--status` | 阅读状态，默认 `未读` |
 | `--attach-pdf` | 抓取 OA PDF 并上传。对已导入的论文也生效，可当"补附件"用 |
 | `--dry-run` | 只演练不写入 |
@@ -342,11 +342,11 @@ python3 -m litflow zotero cleanup-empty --yes
 
 1. 阅读状态用标签，不用集合。`wf:未读 / wf:在读 / wf:已初读 / wf:已精读`（前缀可在 `config.toml` 的 `[butler]` 改）。理由：一篇论文可以属于多个主题集合，但阅读状态是互斥的单一状态。标签在 Zotero 里也能直接筛选。改状态时会替换旧的 `wf:` 状态标签，不会累积。
 
-2. 去重是双保险。每条写入的条目 `extra` 字段里存了 `litflow-key: <内部键>`，同时比对 DOI。所以重复执行 `import` 不会产生重复条目，实测重跑会全部报"已在 Zotero 中"。
+2. 去重是双保险。每条写入的条目 `extra` 字段里存了 `litwarden-key: <内部键>`，同时比对 DOI。所以重复执行 `import` 不会产生重复条目，实测重跑会全部报"已在 Zotero 中"。
 
 3. 写授权需要你点一次弹窗。Zotero 10+ 的写接口需要本地 API key。首次写入时 Zotero 会弹窗，务必点「Always Allow」（永久授权）。如果点的是「Allow」（一次性），每次写入都会重新弹窗，很快会撞上 Zotero 每分钟 5 次的弹窗限流（HTTP 429）。
 
-授权 key 缓存在本地 SQLite（`data/litflow.sqlite3` 的 `kv_cache` 表），不会改你的 `config.toml`。要重置：`litflow zotero check --reset-key`。
+授权 key 缓存在本地 SQLite（`data/litwarden.sqlite3` 的 `kv_cache` 表），不会改你的 `config.toml`。要重置：`litwarden zotero check --reset-key`。
 
 ### 前置条件
 
@@ -365,16 +365,16 @@ python3 -m litflow zotero cleanup-empty --yes
 
 ```bash
 # 看进度：多少篇有笔记、多少篇还在排队、多少篇缺 PDF
-litflow digest status
+litwarden digest status
 
 # 回读笔记（纯读请求，可反复执行，已拉过的不会重复拉）
-litflow digest fetch
+litwarden digest fetch
 
 # 导出汇总表（xlsx + csv + md，默认全出）
-litflow digest export --run 11 --decision include --imported-only
+litwarden digest export --run 11 --decision include --imported-only
 
 # 看某一篇的笔记原文（按内部键或 DOI）
-litflow digest show --run 11 --key "10.1038/s42003-024-06349-5"
+litwarden digest show --run 11 --key "10.1038/s42003-024-06349-5"
 ```
 
 导出的三份文件各有用途：
@@ -388,17 +388,17 @@ litflow digest show --run 11 --key "10.1038/s42003-024-06349-5"
 ### 工作流全貌
 
 ```
-litflow search        检索
+litwarden search        检索
       ↓
-litflow filter        筛选  →  导出文献调研表（xlsx）
+litwarden filter        筛选  →  导出文献调研表（xlsx）
       ↓
-litflow zotero import 写入 Zotero + 抓 OA PDF
+litwarden zotero import 写入 Zotero + 抓 OA PDF
       ↓
    （AI Butler 自动扫描新文献 → 自动精读 → 生成 Markdown 笔记）
       ↓
-litflow digest fetch  回读笔记
+litwarden digest fetch  回读笔记
       ↓
-litflow digest export 导出初读提炼汇总表  ← 最终产物
+litwarden digest export 导出初读提炼汇总表  ← 最终产物
 ```
 
 中间那一步是 Butler 自己完成的，需要你先在
@@ -424,7 +424,7 @@ Zotero 的笔记字段是 HTML，而 Butler 生成的是 Markdown。它可能以
 
 ### 前置条件
 
-- 需要 PDF：没有 PDF 的条目 Butler 无法精读。用 `litflow zotero audit` 查哪些缺
+- 需要 PDF：没有 PDF 的条目 Butler 无法精读。用 `litwarden zotero audit` 查哪些缺
 - Butler 已开启「自动扫描新文献」
 - Butler 的 PDF 处理方式必须与所用模型的能力匹配（见下）
 
@@ -466,7 +466,7 @@ PDF 文本提取失败：未找到 PDF 文件路径
 失败。更麻烦的是 Butler 对这类错误带 `suppressTaskRetry=true`，
 它不会自己重试，这篇论文就一直不会有笔记。
 
-litflow 的对策是把耗时的「下载 PDF」挪到创建条目之前（见 `librarian.prefetch_pdfs`），
+litwarden 的对策是把耗时的「下载 PDF」挪到创建条目之前（见 `librarian.prefetch_pdfs`），
 让窗口只剩「上传」本身。实测窗口从 17~45 秒压到 7~9 秒，但仍有残留。
 
 如果你在 Butler 的任务队列里看到上面这条错误：
@@ -474,7 +474,7 @@ litflow 的对策是把耗时的「下载 PDF」挪到创建条目之前（见 `
 - 在队列里手动重试该任务即可，此时 PDF 已经在库里，会正常精读
   （这也是为什么 `digest status` 会把它算作「待精读」而不是「缺 PDF」）
 - 批量导入时用 `--top` 控制规模，窗口会随批量增大而变长
-- `litflow digest status` 与 `litflow zotero audit` 可以随时核对真实状态
+- `litwarden digest status` 与 `litwarden zotero audit` 可以随时核对真实状态
 
 ---
 
@@ -483,13 +483,13 @@ litflow 的对策是把耗时的「下载 PDF」挪到创建条目之前（见 `
 把整套参数存成一个人可读、可手改的 TOML，之后一条命令重跑。
 
 ```bash
-litflow recipe init                          # 生成配方模板（一次即可）
-litflow recipe list                          # 列出所有配方
-litflow recipe show spatial-transcriptomics            # 查看某个配方的完整内容
+litwarden recipe init                          # 生成配方模板（一次即可）
+litwarden recipe list                          # 列出所有配方
+litwarden recipe show spatial-transcriptomics            # 查看某个配方的完整内容
 
-litflow run spatial-transcriptomics                     # 跑完整流程（6 个阶段）
-litflow run spatial-transcriptomics --dry-run           # 只打印会执行什么
-litflow run spatial-transcriptomics --list-stages       # 看各阶段启用状态
+litwarden run spatial-transcriptomics                     # 跑完整流程（6 个阶段）
+litwarden run spatial-transcriptomics --dry-run           # 只打印会执行什么
+litwarden run spatial-transcriptomics --list-stages       # 看各阶段启用状态
 ```
 
 ### 配方文件长什么样
@@ -542,10 +542,10 @@ imported_only = true
 不是每次都需要 AI 精读。如果你的目的只是筛出该读的、导进 Zotero 自己读，跑前四个阶段就够：
 
 ```bash
-litflow run my-topic --only search,filter,export,zotero
+litwarden run my-topic --only search,filter,export,zotero
 
 # 等价写法
-litflow run my-topic --skip digest-fetch,digest-export
+litwarden run my-topic --skip digest-fetch,digest-export
 ```
 
 拿到的是候选池、一份文献调研表，以及带阅读状态标签的 Zotero 条目（可选附上 PDF）。
@@ -556,7 +556,7 @@ litflow run my-topic --skip digest-fetch,digest-export
 enable = false
 ```
 
-这里有个容易误解的地方：跳过 litflow 的后两阶段，并不会阻止 Butler 去生成笔记。
+这里有个容易误解的地方：跳过 litwarden 的后两阶段，并不会阻止 Butler 去生成笔记。
 Butler 的自动扫描是独立运行的，只要条目带 PDF、它的「自动扫描新文献」又开着，
 它照样会在后台调大模型写总结。要彻底不让 AI 介入，去 Butler 仪表盘关掉
 「自动扫描新文献」，或者只关掉「自动扫描时生成 AI 总结」这一项。
@@ -566,15 +566,15 @@ Butler 的自动扫描是独立运行的，只要条目带 PDF、它的「自动
 跳过也不等于放弃。候选池和 Zotero 条目都在，哪天想看 AI 总结随时补：
 
 ```bash
-litflow digest fetch && litflow digest export
+litwarden digest fetch && litwarden digest export
 ```
 
 自读时常用的几条：
 
 ```bash
-litflow zotero mark 在读 --run 11 --top 5   # 批量改阅读状态，写 wf: 标签
-litflow zotero status                       # 看各状态的分布
-litflow zotero audit                        # 体检哪些条目缺 PDF 附件
+litwarden zotero mark 在读 --run 11 --top 5   # 批量改阅读状态，写 wf: 标签
+litwarden zotero status                       # 看各状态的分布
+litwarden zotero audit                        # 体检哪些条目缺 PDF 附件
 ```
 
 ### 断点续跑
@@ -583,13 +583,13 @@ litflow zotero audit                        # 体检哪些条目缺 PDF 附件
 
 ```bash
 # 只跑某几段
-litflow run spatial-transcriptomics --only filter,export
+litwarden run spatial-transcriptomics --only filter,export
 
 # 跳过某几段
-litflow run spatial-transcriptomics --skip zotero,digest-fetch
+litwarden run spatial-transcriptomics --skip zotero,digest-fetch
 
 # 复用已有的检索结果，不重新检索
-litflow run spatial-transcriptomics --run 13 --only filter,export
+litwarden run spatial-transcriptomics --run 13 --only filter,export
 ```
 
 `run_id` 存在本地 SQLite 里（键 `recipe:<名字>:last_run_id`），不回写你的配方文件，
@@ -608,9 +608,9 @@ litflow run spatial-transcriptomics --run 13 --only filter,export
 不敲命令，在浏览器里点选操作。
 
 ```bash
-litflow web                # 启动后自动打开浏览器（默认 http://127.0.0.1:8765/）
-litflow web --port 8800    # 换端口
-litflow web --no-open      # 不自动开浏览器
+litwarden web                # 启动后自动打开浏览器（默认 http://127.0.0.1:8765/）
+litwarden web --port 8800    # 换端口
+litwarden web --no-open      # 不自动开浏览器
 ```
 
 六个标签页覆盖工作流各环节，外加一个统一的产物出口：
@@ -663,17 +663,17 @@ litflow web --no-open      # 不自动开浏览器
 命令行（适合批量、可脚本化）：
 ```bash
 # 先冒烟测试：只导入 2 篇，几分钟走完六个阶段，确认环境配好了、链路是通的
-litflow run smoke-test
+litwarden run smoke-test
 
 # 再换课题：复制模板改一改
 cp "recipes/recipe-template.toml" "recipes/my-topic.toml"
 # 编辑 [search] query 与 [filter] title_must
-litflow run my-topic
+litwarden run my-topic
 ```
 
 Web 界面（适合边看边调）：
 ```bash
-litflow web
+litwarden web
 ```
 
 六个阶段全跑完约 10 秒到 1 分钟（取决于网络；Zotero 存在时更快）。
@@ -681,7 +681,7 @@ litflow web
 
 ### 已知限制（数据源层面，非代码问题）
 
-- PDF 抓取受数据源限制。2026 年新收录的论文，Europe PMC 往往只有全文 XML，出版商与 NIH 都没提供可程序化下载的 PDF（实测 pmc.ncbi 返回 200 但不是 PDF）。这类论文需要人工通过机构 VPN 取 PDF，`litflow zotero attach-pdf` 会导出 `未下载到PDF_需手动获取.csv`，里面含 DOI 与 EuropePMC 全文 XML 链接。
+- PDF 抓取受数据源限制。2026 年新收录的论文，Europe PMC 往往只有全文 XML，出版商与 NIH 都没提供可程序化下载的 PDF（实测 pmc.ncbi 返回 200 但不是 PDF）。这类论文需要人工通过机构 VPN 取 PDF，`litwarden zotero attach-pdf` 会导出 `未下载到PDF_需手动获取.csv`，里面含 DOI 与 EuropePMC 全文 XML 链接。
 - arXiv 预印本没有引用量。Europe PMC 不索引 arXiv，这是数据源本身的限制。
 
 ---
@@ -728,7 +728,7 @@ python3 -m unittest discover -s tests -v
 - 提交前本地跑一遍：
 
   ```bash
-  python3 -m compileall -q litflow tests && python3 -m unittest discover -s tests
+  python3 -m compileall -q litwarden tests && python3 -m unittest discover -s tests
   ```
 
 CI 会在 Python 3.11 / 3.12 / 3.13 / 3.14 与 macOS 上运行同一套测试，

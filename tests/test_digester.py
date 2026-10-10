@@ -9,7 +9,7 @@
 
 import unittest
 
-from litflow.digester import (
+from litwarden.digester import (
     ParsedNote,
     classify,
     parse_note,

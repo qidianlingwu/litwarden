@@ -10,7 +10,7 @@ from __future__ import annotations
 import unittest
 from datetime import datetime
 
-from litflow.models import (
+from litwarden.models import (
     Paper,
     dedupe,
     normalize_arxiv,

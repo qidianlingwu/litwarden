@@ -34,7 +34,7 @@ class PubMedAdapter(Adapter):
         if not term:
             return []
 
-        common = {"tool": "litflow", "email": self.email}
+        common = {"tool": "litwarden", "email": self.email}
 
         es = self.http.get_json(
             ESEARCH,

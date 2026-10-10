@@ -1,12 +1,12 @@
-# litflow 示例配方：空间转录组去卷积的方法论文
+# litwarden 示例配方：空间转录组去卷积的方法论文
 #
 # 这是一个「跑得通、且每个参数都说明了为什么这样设」的完整例子。
 # 想改成自己的课题，复制一份改 [search].query 和 [filter].title_must 即可：
 #   cp recipes/spatial-transcriptomics.toml recipes/我的课题.toml
 #
 # 执行：
-#   litflow run spatial-transcriptomics              # 六个阶段全跑
-#   litflow run spatial-transcriptomics --only search,filter,export   # 只跑到导出
+#   litwarden run spatial-transcriptomics              # 六个阶段全跑
+#   litwarden run spatial-transcriptomics --only search,filter,export   # 只跑到导出
 
 name = "spatial-transcriptomics"
 description = "空间转录组细胞类型去卷积的方法论文（以 Q1 期刊为主）"
@@ -49,7 +49,7 @@ export = []
 min_keyword = 0.3
 
 # 期刊等级门槛，写法为「体系:等级」。前提是已导入对应等级表：
-#   litflow rank import sjr
+#   litwarden rank import sjr
 rank = { sjr = "Q1" }
 
 # 等级表收录不全时，未收录的期刊会被 rank 条件剔除。

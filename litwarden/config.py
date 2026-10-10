@@ -41,7 +41,7 @@ class Config:
     # ---- 派生路径 ----
     @property
     def db_path(self) -> Path:
-        return self.data_dir / "litflow.sqlite3"
+        return self.data_dir / "litwarden.sqlite3"
 
     @property
     def journal_rank_dir(self) -> Path:

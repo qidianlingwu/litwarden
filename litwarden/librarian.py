@@ -1,7 +1,7 @@
 """Librarian —— 文献管理：把候选池写进 Zotero，并管理阅读状态。
 
 设计要点：
-  · Zotero 是文献库的唯一事实来源。litflow 只做「写进去 + 记住对应关系」。
+  · Zotero 是文献库的唯一事实来源。litwarden 只做「写进去 + 记住对应关系」。
   · 对应关系写在本地 SQLite 的 zotero_links 表（paper_key <-> zotero_key），
     M3 要靠它知道去哪读 Butler 生成的笔记。
   · 阅读状态用保留标签 `wf:未读 / wf:在读 / wf:已初读 / wf:已精读`，
@@ -22,7 +22,7 @@ from .models import Paper
 from .store import Store
 from .zotero import ImportResult, ZoteroClient, ZoteroError, download_file
 
-DEFAULT_COLLECTION = "litflow 导入"
+DEFAULT_COLLECTION = "litwarden 导入"
 FAVORITE_COLLECTION = "⭐ 收藏"
 
 # Zotero-AI-Butler 在条目入库后**等 2 秒**就来判定附件是否就绪
@@ -114,8 +114,8 @@ def paper_to_item(
         "creators": creators,
         "date": str(p.year) if p.year else "",
         "abstractNote": p.abstract or "",
-        # extra 里存 litflow 的内部键，用于可靠地识别「这篇是不是已经导入过」
-        "extra": f"litflow-key: {p.key}",
+        # extra 里存 litwarden 的内部键，用于可靠地识别「这篇是不是已经导入过」
+        "extra": f"litwarden-key: {p.key}",
         "tags": tags,
         "url": p.url or (f"https://doi.org/{p.doi}" if p.doi else ""),
     }
@@ -150,7 +150,7 @@ def paper_to_item(
 def existing_identifiers(
     client: ZoteroClient, collection_key: str | None
 ) -> tuple[set[str], set[str]]:
-    """返回 (已存在的 DOI 集合, 已存在的 litflow-key 集合)。"""
+    """返回 (已存在的 DOI 集合, 已存在的 litwarden-key 集合)。"""
     items = (
         client.collection_items(collection_key)
         if collection_key
@@ -164,7 +164,7 @@ def existing_identifiers(
             dois.add(str(d["DOI"]).strip().lower())
         extra = d.get("extra") or ""
         for line in str(extra).splitlines():
-            if line.strip().lower().startswith("litflow-key:"):
+            if line.strip().lower().startswith("litwarden-key:"):
                 keys.add(line.split(":", 1)[1].strip())
     return dois, keys
 
@@ -216,7 +216,7 @@ def import_papers(
     already: list[Paper] = []
     for p in papers:
         if p.key in keys:
-            res.skipped.append((p.key, "已在 Zotero 中（litflow-key 命中）"))
+            res.skipped.append((p.key, "已在 Zotero 中（litwarden-key 命中）"))
             already.append(p)
             continue
         if p.doi and p.doi.lower() in dois:
@@ -651,7 +651,7 @@ def sync_links(
       · 论文是先手工加进 Zotero 的
     不修的话 `mark`（改阅读状态）和 M3（回读 Butler 笔记）都会找不到对应条目。
 
-    匹配依据优先用条目 extra 里的 `litflow-key: <内部键>`（最可靠），
+    匹配依据优先用条目 extra 里的 `litwarden-key: <内部键>`（最可靠），
     退化到 DOI 匹配。
     """
     papers = store.get_papers()
@@ -675,7 +675,7 @@ def sync_links(
         paper: Paper | None = None
         extra = str(d.get("extra") or "")
         for line in extra.splitlines():
-            if line.strip().lower().startswith("litflow-key:"):
+            if line.strip().lower().startswith("litwarden-key:"):
                 paper = by_key.get(line.split(":", 1)[1].strip())
                 break
         if paper is None and d.get("DOI"):
@@ -693,7 +693,7 @@ def sync_links(
         status = None
         for tg in d.get("tags") or []:
             tag = str(tg.get("tag", ""))
-            if tag.startswith(("wf:", "litflow:")):
+            if tag.startswith(("wf:", "litwarden:")):
                 tail = tag.split(":", 1)[1]
                 if tail and tail != "OA":
                     status = tail
@@ -703,7 +703,7 @@ def sync_links(
 
     if skipped:
         problems.append(
-            f"{skipped} 个 Zotero 条目没有对应的 litflow 记录"
+            f"{skipped} 个 Zotero 条目没有对应的 litwarden 记录"
             "（可能是你手工加进 Zotero 的，或来自已删除的旧检索）"
         )
     return matched, skipped, problems

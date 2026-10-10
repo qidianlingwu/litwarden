@@ -14,7 +14,7 @@
 
 import unittest
 
-from litflow.zotero import ZoteroClient
+from litwarden.zotero import ZoteroClient
 
 
 def _requested_keys(params) -> list[str]:

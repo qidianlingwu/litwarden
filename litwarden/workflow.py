@@ -38,9 +38,9 @@ STAGE_LABELS = {
     "digest-export": "导出初读提炼表",
 }
 
-RECIPE_TEMPLATE = '''# litflow 工作流配方
+RECIPE_TEMPLATE = '''# litwarden 工作流配方
 # 复制这个文件改名即可新建一套流程：cp recipe-template.toml 我的课题.toml
-# 然后：litflow run 我的课题
+# 然后：litwarden run 我的课题
 
 name = ""
 description = ""
@@ -115,7 +115,7 @@ export = ["xlsx", "csv", "md", "bib"]
 # 设 false 则跳过这一段
 enable = true
 # 目标集合，不存在会自动创建
-collection = "litflow 导入"
+collection = "litwarden 导入"
 # 阅读状态标签（会写成 wf:<状态>）
 status = "未读"
 # 取哪种决策的论文：include（筛过的，推荐）| candidate（全部候选）
@@ -190,7 +190,7 @@ def recipe_path(cfg: Config, name: str) -> Path:
         return alt
     raise RecipeError(
         f"找不到配方 {name!r}。\n"
-        f"可用配方在 {d}/ 下，执行 `litflow recipe list` 查看。"
+        f"可用配方在 {d}/ 下，执行 `litwarden recipe list` 查看。"
     )
 
 
@@ -435,7 +435,7 @@ def stage_zotero(cfg: Config, store: Store, r: Recipe, http: Any, run_id: int,
 
     client = _zotero_client(cfg, store)
     opts = ImportOptions(
-        collection=str(z.get("collection") or "litflow 导入"),
+        collection=str(z.get("collection") or "litwarden 导入"),
         status=str(z.get("status") or "未读"),
         attach_pdf=bool(z.get("attach_pdf", False)),
         only_oa=bool(z.get("oa_only", False)),
@@ -557,7 +557,7 @@ def run_recipe(
                 if run_id is None:
                     raise RecipeError(
                         f"阶段 {stage} 需要一次检索运行，但找不到。\n"
-                        "先执行检索阶段（或先单跑一次 `litflow search`），"
+                        "先执行检索阶段（或先单跑一次 `litwarden search`），"
                         "或用 `--run <编号>` 指定。"
                     )
                 if stage == "filter":

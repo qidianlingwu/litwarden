@@ -1,8 +1,8 @@
 # 科研 AI 工具与 Agent 工作流综合调研
 
-> 本文是 litflow 立项前对科研 AI 工具与 Agent 工作流的前置调研，面向想了解工具全景、可编程数据地基与工作流设计要点的读者。
+> 本文是 litwarden 立项前对科研 AI 工具与 Agent 工作流的前置调研，面向想了解工具全景、可编程数据地基与工作流设计要点的读者。
 >
-> 文档定位：调研报告。litflow 的架构决策与模块设计见 [`architecture.md`](./architecture.md)。
+> 文档定位：调研报告。litwarden 的架构决策与模块设计见 [`architecture.md`](./architecture.md)。
 > 调研日期：2026-10-08　｜　调研方式：多搜索引擎 + 权威来源交叉验证（高校图书馆 LibGuides、CASRAI 指南、官方发布渠道）
 
 ---
