@@ -7,8 +7,8 @@
 [![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](requirements.txt)
 [![License](https://img.shields.io/badge/license-MIT-green)](#许可证)
 
-> **第一次用、不太熟悉 GitHub？** 看 [新手上路：没用过 GitHub 也能跑起来](docs/getting-started.md)
-> —— 不用注册账号、不用编程基础，跟着做十分钟就能跑出第一份结果。
+> 第一次用、不太熟悉 GitHub？看 [新手上路：没用过 GitHub 也能跑起来](docs/getting-started.md)
+> 不用注册账号，不用编程基础，跟着做十分钟就能跑出第一份结果。
 
 <details>
 <summary><b>English overview</b></summary>
@@ -556,7 +556,7 @@ litflow run my-topic --skip digest-fetch,digest-export
 enable = false
 ```
 
-这里有个容易误解的地方：**跳过 litflow 的后两阶段，并不会阻止 Butler 去生成笔记。**
+这里有个容易误解的地方：跳过 litflow 的后两阶段，并不会阻止 Butler 去生成笔记。
 Butler 的自动扫描是独立运行的，只要条目带 PDF、它的「自动扫描新文献」又开着，
 它照样会在后台调大模型写总结。要彻底不让 AI 介入，去 Butler 仪表盘关掉
 「自动扫描新文献」，或者只关掉「自动扫描时生成 AI 总结」这一项。
@@ -618,7 +618,7 @@ litflow web --no-open      # 不自动开浏览器
 | 标签页 | 做什么 |
 |---|---|
 | 检索 | 填关键词、选数据源，点一下就开始；带实时日志与进度条 |
-| 论文表 | 左侧筛选条件（等级/引用/匹配度/标题词）；表格带「摘要速览」列（首句 + 结论，有结论段就用结论段，并自动跳过数据可用性声明），可在**导入之前**先读个大概再决定勾选谁；勾选后导出或写入 Zotero |
+| 论文表 | 左侧筛选条件（等级/引用/匹配度/标题词）；表格带「摘要速览」列（首句 + 结论，有结论段就用结论段，并自动跳过数据可用性声明），可在导入之前先读个大概再决定勾选谁；勾选后导出或写入 Zotero |
 | Zotero | 本地 API 状态、目标集合、阅读状态、批量体检 PDF 附件、只补 PDF |
 | 提炼 | 进度条、回读笔记、汇总表；点标题看笔记解析详情与原文 |
 | 导出文件 | 列出 `data/exports/` 下全部产物，按类型/文件名过滤，点名字即下载 |
@@ -710,7 +710,7 @@ python3 -m unittest discover -s tests -v
 
 | 文档 | 内容 |
 |---|---|
-| [`docs/getting-started.md`](docs/getting-started.md) | 新手上路：不熟 GitHub 也能装好跑起来——下载、装 Python、配置、常见报错 |
+| [`docs/getting-started.md`](docs/getting-started.md) | 新手上路：不熟 GitHub 也能装好跑起来，下载、装 Python、配置、常见报错 |
 | [`docs/architecture.md`](docs/architecture.md) | 架构决策与取舍：为什么坚持零依赖、AI Butler 的松耦合集成方案、期刊等级数据的版权处理 |
 | [`docs/ai-research-tools-survey.md`](docs/ai-research-tools-survey.md) | 科研 AI 工具全景调研、完整流程环节划分，以及本项目在其中的定位 |
 | [`docs/testing.md`](docs/testing.md) | 测试分层与用例清单、已知问题清单、发布前验收标准 |
